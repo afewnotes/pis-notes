@@ -54,10 +54,58 @@
     - while, do
     - 没有与 Java 类似的 for 循环 `for(init; test; update)`，可使用 while 代替，或者使用 for 表达式
         - `for (i <- 1 to 10) r = r * i`
-        - `i <- expr` 会遍历所有元素
+        - 生成器 `variable <- expression` 会遍历所有元素
+        - for 循环可包含多个生成器，逗号分隔（或换行区分），可使用 parttern guard 来进行条件过滤
+            - `for(v <- exp1; v2 <- exp2 if(condition)) doSome()` // if 之前的分号可省略
         - for 语句中的变量不需要声明 val 或 var，其类型与迭代的集合中元素类型一致
         - `1 to n` 包含上界，`1 until n` 不包含上界
     - 没有 break，continue 表达式来中断循环，替代方案：
         - Boolean 变量控制
         - 嵌套函数
         - 使用 Breaks 对象的 break 方法
+        
+        ```
+        import scala.util.control.Breaks._
+        breakable {
+            for (...) {
+                if (...) break
+            }
+        }
+        ```
+    - yield，在 for 循环体以 yield 开始的形式成为 for 推导式
+        - 产生的结果为每次迭代的值的集合
+            - `for(i <- 1 to 3) yield i % 3` // Vector(1, 2, 0)
+        - 生成的集合与第一个生成器类型一致
+            - `for(c <- "hello"; i <- 0 to 1) yield (c+i).toChar` // hieflmlmop
+            - `for(i <- 0 to 1; c <- "hello") yield (c+i).toChar` // Vector(h, e, l, l, o, i, f, m, m, p)
+            
+- 函数
+    - > Scala has functions in addition to method
+    - `def abs(x: Double) = if (x >= 0) x else -x`
+    - 必须指定所有参数的类型；返回值为`=`右边的表达式或语句块的最后一个表达式的结果；可省略 `return` 
+    - 如果是递归函数，则必须指明返回类型
+        - `def fac(n: Int): Int = if (n <= 0) 1 else n * fac(n - 1)`
+    - 参数默认值和命名参数
+        - `def decorate(str: String, left: String = "[", right: String = "]") = left + str + right`
+        - 调用时可给部分参数，也可给全部参数，还可通过命名参数传值而不考虑参数顺序
+            - `decorate("a")` // [a]
+            - `decorate("a", "<<")` // <<a]
+            - `decorate(left="<", "a")` // <a
+    - 可变参数（本质上是一个 Seq 类型的参数）
+        - `def sum(args: Int*) ={var result=0; for (a <- args) result += a; result}` 
+        - `sum(1,2,3)` // 6
+        - `sum(1 to 5: _*)` // 15 当传递序列做为参数时，需要添加 `_*` 告诉编译器传入的为参数序列， 而不是 Int
+
+- 过程 Procedures
+    - 无返回值的函数
+    - 调用过程通常是为了其副作用，如打印等
+    - `def box(s: String) { println(s) }` // 无需要 `=`
+
+- `lazy`
+    - 延迟加载，变量定义为 lazy 后，会在第一次访问时才被初始化/执行
+    - `lazy val words = scala.io.Source.fromFile("/../words").mkString`  // if the program never accesses `words`, the file is never opened
+    - 减少初始化消耗、解决循环依赖问题等
+    - 会有多余开销：每次使用到 lazy 变量时，都会检查改变量是否已经初始化
+
+
+    
