@@ -81,6 +81,8 @@
             
 - 函数
     - > Scala has functions in addition to method
+    - `trait Function...` 的实例
+    - `technically is an object with an apply method` 
     - `def abs(x: Double) = if (x >= 0) x else -x`
     - 必须指定所有参数的类型；返回值为`=`右边的表达式或语句块的最后一个表达式的结果；可省略 `return` 
     - 如果是递归函数，则必须指明返回类型
@@ -108,4 +110,28 @@
     - 会有多余开销：每次使用到 lazy 变量时，都会检查改变量是否已经初始化
 
 
+- `Exceptions`
+    - 无受检异常
+    - `Nothing`，throw 表达式的返回类型；在 if/else 表达式中，如果一个分支抛出异常，则 if/else 的返回类型为另一个分支的类型
+        - `if (x > 0) f(x) else throw new Exception("xx")`
+    - catch 语句块中可使用模式匹配来处理对应类型的异常
+        
+        ```scala
+        try {
+            process(xx)
+        } catch {  // 优先匹配原则，将最准确的匹配项放在前面，通用的匹配项放在最后
+            case ex: IOException => do1()
+            case _ => None
+        }
+        ```
+    - 使用 try/finally 来忽略异常
     
+        ```scala
+        preStep()  // 此步出错如何处理？
+        
+        try {
+            process(oo)
+        } finally {
+            f()    //  此步出错又如何处理？
+        }
+        ```
