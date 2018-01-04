@@ -11,4 +11,27 @@ object impatient {
     def apply(n: Int): Int = {
         signum(n)
     }
+    
+    def main(args: Array[String]) {
+    //  for (i <- 0 to 10 reverse) println(i)
+        countDown(10)
+    }
+    
+    def countDown(n: Int) {
+        for(i <- 0 to n reverse) println(i)
+    }
+    
+    def product(s: String): Int = {
+        (for (c <- s) c.toInt).product
+        
+        // s.map(_.toInt).product
+        
+        // s.head.toInt * product(s.tail)
+    }
+    
+    def productR(s: String):Int = s match {
+      case "" => 1
+      case _ => s.head.toInt * productR(s.tail)
+    }
+    
 }

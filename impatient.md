@@ -107,7 +107,7 @@
     - 延迟加载，变量定义为 lazy 后，会在第一次访问时才被初始化/执行
     - `lazy val words = scala.io.Source.fromFile("/../words").mkString`  // if the program never accesses `words`, the file is never opened
     - 减少初始化消耗、解决循环依赖问题等
-    - 会有多余开销：每次使用到 lazy 变量时，都会检查改变量是否已经初始化
+    - 会有多余开销：每次使用到 lazy 变量时，都会检查该变量是否已经初始化
 
 
 - `Exceptions`
