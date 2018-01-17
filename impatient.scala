@@ -34,4 +34,10 @@ object impatient {
       case _ => s.head.toInt * productR(s.tail)
     }
     
+    def compute(x: Int, n: Int): Int = {
+        if (n == 0) 1
+        else if (n < 0) 1 / compute(x, -n)
+        else if (n % 2 == 0) power(compute(x, n / 2), 2).toInt
+        else x * compute(x, n - 1)
+    }
 }
