@@ -137,3 +137,12 @@
         ```
         
 ###### Arrays
+- `Array` 固定长度；`ArrayBuffer` 可变长度
+    - `arr.toBuffer`, `buf.toArray`
+- 初始化是不要使用 `new`
+- 使用 `()` 访问元素
+- 使用 `for (elem <- arr)` 遍历元素；倒序 `arr.reverse`
+- 使用 `for (elem <- arr if ...) ... yield ... ` 转换为新的数组
+    - 等价于 `arr.filter(...).map(...)` 或者更简洁 `arr filter { ... } map {...}`
+- 与 Java 的数组通用，如果是 `ArrayBuffer`， 可配合 `scala.collection.JavaConversions` 使用
+-
