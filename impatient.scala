@@ -41,6 +41,9 @@ object impatient {
         else x * compute(x, n - 1)
     }
     
+    
+    /** 数组 **/
+    
     // 固定长度
     val nums = new Array[Int](10)  // nums: Array[Int] = Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     val a = new Array[String](10)   // a: Array[String] = Array(null, null, null, null, null, null, null, null, null, null)
@@ -95,5 +98,30 @@ object impatient {
     // 从后向前删除更高效，因为每次 remove 都需要将元素向前位移/shift，从后删除 shift 的元素数量更少
     for (j <- (1 until indexes.length).reverse) a.remove(indexes(j))
     
+    // 显示数组内容
+    Array(1,2,3).mkString(" & ")    // String = 1 & 2 & 3
+    Array(1,2,3).mkString("<", ",", ">")    // String = <1,2,3>
+    
+    // 多维数组
+    val row = 3; val column = 4
+    val matrix = Array.ofDim[Double](row, column)  
+    // Array[Array[Double]] = Array(Array(0.0, 0.0, 0.0, 0.0), Array(0.0, 0.0, 0.0, 0.0), Array(0.0, 0.0, 0.0, 0.0))
+    matrix(row)(column)
+    
+    // 不规则数组
+    val triangle = new Array[Array[Int]](10)
+    for (i <- 0 until triangle.length)
+        triangle(i) = new Array[Int](i + 1)
+        
+    // ex1 随机数组
+    def randomArray(n: Int): Array[Int] = (0 until new Random().nextInt(n)).toArray
+    // ex2 交换相邻元素
+    val a = Array(1, 2, 3, 4, 5)
+    for (i < 0 until (a.length, 2) if (i < a.length - 1)) {
+        val tmp = a(i)
+        a(i) = a(i+1)
+        a(i+1) = tmp
+    }
+    // ex3 
     
 }

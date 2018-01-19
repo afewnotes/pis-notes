@@ -145,4 +145,6 @@
 - 使用 `for (elem <- arr if ...) ... yield ... ` 转换为新的数组
     - 等价于 `arr.filter(...).map(...)` 或者更简洁 `arr filter { ... } map {...}`
 - 与 Java 的数组通用，如果是 `ArrayBuffer`， 可配合 `scala.collection.JavaConversions` 使用
--
+- 在做任何操作前都会转换为 `ArrayOps` 对象
+- 构建多维数组
+    - `val matrix = Array.ofDim[Double](3, 4)` // 3行4列
