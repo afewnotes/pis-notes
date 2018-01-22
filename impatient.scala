@@ -117,11 +117,41 @@ object impatient {
     def randomArray(n: Int): Array[Int] = (0 until new Random().nextInt(n)).toArray
     // ex2 交换相邻元素
     val a = Array(1, 2, 3, 4, 5)
-    for (i < 0 until (a.length, 2) if (i < a.length - 1)) {
+    for (i <- 0 until (a.length, 2) if (i < a.length - 1)) {
         val tmp = a(i)
         a(i) = a(i+1)
         a(i+1) = tmp
-    }
+    } //  Array(2, 1, 4, 3, 5)
     // ex3 
+    (for (i <- a.sliding(2,2); j <- i.reverse) yield j).toArray
     
+    // ex4
+    val arr = Array(1,-4,9,-2,3,-5)
+    arr.filter(_ > 0) ++ arr.filter(_ < 0)
+    
+    (for (i <- arr if i > 0) yield i) ++ (for (j <- arr if j < 0) yield j)
+    
+    // ex5
+    val d = Array[Double](1,2,3.5)
+    d.sum / d.length
+    
+    // ex6 
+    Array(1,9,2,7).reverse
+    import scala.collection.mutable.ArrayBuffer
+    ArrayBuffer(5,3,9,0).reverse
+    
+    // ex7
+    Array(1,1,2,3,3).distinct
+    
+    // ex8
+    a.filter(_ % 2 == 0).map(_ * 2)
+    
+    // ex9 
+    import java.util.TimeZone
+    TimeZone.getAvailableIDs.filter(_.startsWith("America/")).map(_.stripPrefix("America/")).sorted
+    
+    // ex10
+    import java.awt.datatransfer._
+    val flavors = SystemFlavorMap.getDefaultFlavorMap().asInstanceOf[SystemFlavorMap]
+    println(collection.JavaConversions.asBuffer(flavors.getNativesForFlavor(DataFlavor.imageFlavor)))
 }
