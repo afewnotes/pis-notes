@@ -148,3 +148,16 @@
 - 在做任何操作前都会转换为 `ArrayOps` 对象
 - 构建多维数组
     - `val matrix = Array.ofDim[Double](3, 4)` // 3行4列
+
+###### Maps & Tuples
+- 创建、查询、遍历 Map 的语法便捷
+    - `val scores = Map("a" -> 100, "b" -> 90, "c" -> 95)` 创建的默认为 `immutable`
+    - 可变的 Map 需要显式指定 `scala.collection.mutable.Map` 
+    - 创建空的 Map 需指定类型 `new scala.collection.mutable.HashMap[String, Int]`
+    - Map 是键值对的集合，键值对类型可不相同
+        - `"a" -> 100` 等价于 `("a", 100)`；创建的另一种写法 `Map(("a", 100), ("b", 90), ("c", 95))` 
+    - 访问 `scores("a")`
+- 区分 mutable 和 immutable
+- 默认 hash map，也可使用 tree map
+- 与 Java 中的 Map 转换方便
+- Tuples 在聚合操作时很有用
