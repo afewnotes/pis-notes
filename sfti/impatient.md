@@ -151,12 +151,25 @@
 
 ###### Maps & Tuples
 - 创建、查询、遍历 Map 的语法便捷
-    - `val scores = Map("a" -> 100, "b" -> 90, "c" -> 95)` 创建的默认为 `immutable`
+    - `val scores = Map("a" -> 100, "b" -> 90, "c" -> 95)` 创建的默认为 `immutable` 的 hash map
     - 可变的 Map 需要显式指定 `scala.collection.mutable.Map` 
     - 创建空的 Map 需指定类型 `new scala.collection.mutable.HashMap[String, Int]`
     - Map 是键值对的集合，键值对类型可不相同
         - `"a" -> 100` 等价于 `("a", 100)`；创建的另一种写法 `Map(("a", 100), ("b", 90), ("c", 95))` 
-    - 访问 `scores("a")`
+    - 访问 
+        - `scores("a")`  //返回 Option
+        - `scores("d").getOrElse(0)`  // 返回实际值
+    - mutable 更新 
+        - 更新值 `scores("a") = 80`
+        - 增加元素 `scores += ("d" -> 70, "e" -> 50)` 
+        - 删除元素 `scores -= "a"`
+    - immutable 不可更新，修改时会产生新的 Map， 但公共部分的元素数据是共享的
+        - 添加元素会产生新的 Map，`scores + ("d" -> 70, "e" -> 50)`
+        - 删除元素产生新的 Map  `scores - "a"`
+    - 遍历 `for((k,v) <- map) ...`
+    - 排序 Map
+        - 按照 key 排序存放  `scala.collection.immutable.SortedMap("d" -> 1, "b" -> 2, "c" -> 3)` // Map(b -> 2, c -> 3, d -> 1)
+        - 按照插入顺序排放  `scala.collection.mutable.LinkedHashMap("d" -> 1, "b" -> 2, "c" -> 3)` // Map(d -> 1, b -> 2, c -> 3)
 - 区分 mutable 和 immutable
 - 默认 hash map，也可使用 tree map
 - 与 Java 中的 Map 转换方便
