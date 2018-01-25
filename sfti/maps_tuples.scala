@@ -14,4 +14,18 @@ object maps {
     
     val scores = scala.collection.immutable.SortedMap("Alice" -> 10, "Fred" -> 7, "Bob" -> 3, "Cindy" -> 8)
     // scala.collection.immutable.SortedMap[String,Int] = Map(Alice -> 10, Bob -> 3, Cindy -> 8, Fred -> 7)
+    
+    // Java 》 Scala 
+    import scala.collection.JavaConverters._
+    val scores: scala.collection.mutable.Map[String, Int] = mapAsScalaMap(new java.util.TreeMap[String, Int])
+    val props: scala.collection.mutable.Map[String, String] = propertiesAsScalaMap(System.getProperties)
+    
+    // zip
+    val symbols = Array("<", "-", ">")
+    val counts = Array(2, 10, 2)
+    val pairs = symbols.zip(counts)  //  Array((<,2), (-,10), (>,2))
+    for ((s, n) <- pairs) print(s * n)  // <<---------->>
+    pairs.toMap // Map(< -> 2, - -> 10, > -> 2)
+    // keys.zip(values).toMap
+    
 }

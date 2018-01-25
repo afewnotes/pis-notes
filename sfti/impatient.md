@@ -172,5 +172,13 @@
         - 按照插入顺序排放  `scala.collection.mutable.LinkedHashMap("d" -> 1, "b" -> 2, "c" -> 3)` // Map(d -> 1, b -> 2, c -> 3)
 - 区分 mutable 和 immutable
 - 默认 hash map，也可使用 tree map
-- 与 Java 中的 Map 转换方便
+- 与 Java 中的 Map 转换方便 `scala.collection.JavaConverters`
 - Tuples 在聚合操作时很有用
+    - Map 中的键值对就是最简单的元组形式 `(k, v)`
+    - 类型不必一致 `val a = (1, 3.14, "hello")`
+    - 下标访问 `a._1` // 1
+    - 模式匹配访问  `val (first, second, _) = a` 
+    - 用于返回多个值
+- Zipping
+    - 元组可用于绑定多个值同时处理
+    - `zip` 方法
