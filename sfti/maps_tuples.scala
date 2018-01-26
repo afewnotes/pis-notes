@@ -28,4 +28,68 @@ object maps {
     pairs.toMap // Map(< -> 2, - -> 10, > -> 2)
     // keys.zip(values).toMap
     
+    // ex1 
+    val gizmos = Map("g1" -> 100, "g2" -> 200, "g3" -> 300)
+    gizmos.mapValues(_ * 0.9)
+    
+    // ex2 words count
+    val in = new java.util.Scanner(new java.io.File("sfti/scan.txt"))
+    val wc = new scala.collection.mutable.HashMap[String, Int]
+    while (in.hasNext()) {
+        val w = in.next()
+        wc.put(w, wc.getOrElse(w, 0) + 1)
+    }
+    println(wc)
+    
+    // ex3
+    val in = new java.util.Scanner(new java.io.File("sfti/scan.txt"))
+    var wc = Map[String, Int]()
+    while (in.hasNext()) {
+        val w = in.next()
+        wc = wc + (w -> (wc.getOrElse(w, 0) + 1))
+    }
+    println(wc)
+    
+    // ex4
+    val in = new java.util.Scanner(new java.io.File("sfti/scan.txt"))
+    var wc1 = scala.collection.immutable.SortedMap[String, Int]() withDefault (_ => 0)
+    while (in.hasNext()) {
+        val w = in.next()
+        wc1 = wc1 + (w -> (wc1.getOrElse(w, 0) + 1))
+    }
+    println(wc1)
+    
+    // ex5
+    val in = new java.util.Scanner(new java.io.File("sfti/scan.txt"))
+    val wc2 = new java.util.TreeMap[String, Int]
+    while (in.hasNext()) {
+        val w = in.next()
+        if (!wc2.containsKey(w)) wc2.put(w, 1)
+        else wc2.put(w, (wc2.get(w) + 1))
+    }
+    println(wc2)
+    
+    // ex6
+    import java.util.Calendar._
+    val cal = scala.collection.mutable.LinkedHashMap[String, Int](
+            "Monday" -> MONDAY,
+            "Tuesday" -> TUESDAY,
+            "Wednesday" -> WEDNESDAY
+        )
+    println(cal)
+    
+    // ex7
+    val props = scala.collection.JavaConverters.mapAsScalaMap(System.getProperties)
+    val maxLen = props.keySet.map(_.toString).maxBy(_.size).size
+    for((k,v) <- props) println(k + " " * (maxLen - k.toString.length) + "|" + v) 
+    
+    // ex8
+    def minmax(values: Array[Int]) = (values.min, values.max)
+    
+    // ex9
+    def lteqgt(values: Array[Int], v: Int) = 
+        (values.filter(_ < v).size, values.filter(_ == v).size, values.filter(_ > v).size)
+        
+    // ex10
+    println("Hello".zip("World")) // Vector((H,W), (e,o), (l,r), (l,l), (o,d))
 }
