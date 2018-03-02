@@ -80,7 +80,7 @@
             - `for(i <- 0 to 1; c <- "hello") yield (c+i).toChar` // Vector(h, e, l, l, o, i, f, m, m, p)
             
 - 函数
-    - > Scala has functions in addition to method
+    - Scala has functions in addition to method
     - `trait Function...` 的实例
     - `technically is an object with an apply method` 
     - `def abs(x: Double) = if (x >= 0) x else -x`
@@ -182,3 +182,14 @@
 - Zipping
     - 元组可用于绑定多个值同时处理
     - `zip` 方法
+
+
+###### Classes
+- 一个源文件可包含多个类，每个类默认都是 public
+- 类字段必须初始化，编译后默认是 private，自动生成 public 的 getter/setter ；[Person 示例](sfti/tmp/Person.scala)
+    - `private` 字段，生成 private 的 getter/setter
+    - `val` 字段，只生成 getter
+    - `private[this]` 字段，不生成 getter/setter
+    - 自定义 getter/setter，foo 和 foo_=
+- 类方法默认都是 public 
+- 方法调用规约：访问器调用可省略括号，修改器调用加上括号
