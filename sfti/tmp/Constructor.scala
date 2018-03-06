@@ -13,12 +13,13 @@ class Constructor() {
     }
 }
 
-class Pri(var nameInPri: String, val ageInPri: String) {    // 主构造器与类定义密不可分，参数直接定义在类名后；主构造器会立即执行类定义中的所有语句
+class Pri(nameInPri: String, ageInPri: String) {    // 主构造器与类定义密不可分，参数直接定义在类名后；主构造器会立即执行类定义中的所有语句
     println("hello again")
     
     // def this(test: String) {
     //     this()  // 无法调用
     // }
+    def param2 = "hello: " + nameInPri
 }
 
 /*
@@ -38,11 +39,8 @@ public class Constructor {
 -$ javap -p Pri
 Compiled from "Constructor.scala"
 public class Pri {
-  private java.lang.String nameInPri;
-  private final java.lang.String ageInPri;
-  public java.lang.String nameInPri();
-  public void nameInPri_$eq(java.lang.String);
-  public java.lang.String ageInPri();
+  private final java.lang.String nameInPri;  // param2 使用到了 nameInPri，因此 nameInPri 变为字段
+  public java.lang.String param2();
   public Pri(java.lang.String, java.lang.String);  // 主构造器
 }
 */
