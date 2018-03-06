@@ -1,3 +1,4 @@
+import scala.beans.BeanProperty
 
 class Person {
     var age = 0 // 默认生成 private 字段及 public 的访问器/修改器
@@ -10,6 +11,8 @@ class Person {
     
     private[this] val c = 0  // 生成 private final 常量，无访问器/修改器
     private[this] var d = 0  // 生成 private 字段，无访问器/修改器
+    
+    @BeanProperty var bean: String = _
 }
 
 /*
@@ -27,6 +30,12 @@ public class Person {
   private void g_$eq(int);
   public int a();
   private int b();
+  
+  public java.lang.String bean();
+  public void bean_$eq(java.lang.String);
+  public java.lang.String getBean();  // 除了生成默认的 name 和 name_$eq 方法外，还生成了 JavaBean 规范的方法 get/set
+  public void setBean(java.lang.String);
+  
   public Person();
 }
 */
