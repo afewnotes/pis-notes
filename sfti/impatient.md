@@ -210,13 +210,25 @@
 ###### Objects
 - 用于单例及工具类方法
     - object 构造器只在第一次被调用时执行
-- 可继承 `class` 或 `trait`
+- 可继承一个 `class` 或多个 `trait`
+    - 可用于全局默认对象
 - 不可提供构造器参数
 - 伴生对象
     - 与类名称一致
-    - 
+    - 类与伴生对象可互相访问私有资源，但区分作用域，如 `Accounts.newUniqueNumber()` 而不是 `newUniqueNumber()`
+    - 类与伴生对象必须在同一个源文件中
+- 伴生对象中的 `apply` 方法
+    - 调用方式 `Object(arg1, ..., argN)`， 返回伴生类的实例，如 `Array(1,2,3)`
+    - 省略 `new` 关键字，在嵌套表达式中很方便
+- 应用对象
+    - `extends App`
+    - 不需要 main 方法直接执行构造器内的代码
+- scala 默认无枚举类型
+    - 使用 `Enumeration` 帮助类实现
+    - 枚举类型为 `Enumeration.Value(ID, name)` 内部类， ID依次累加, 默认0开始；name默认是字段名
 
-
+###### Packages and Imports
+- 
 
 
 
