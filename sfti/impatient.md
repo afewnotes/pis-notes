@@ -237,6 +237,8 @@
 - `package` 包名和文件路径并不一定对应
 - `java.lang`, `scala`, `Predef` 始终默认会导入
 - 与 Java 不同，包路径并不是绝对的，如 `collection.mutable` 实际是 `scala.collection.mutable`
+- `package a.b.c` 与 `package a { package b { package c {}}}` 不同
+  - `package a` 或 `package b` 中定义的资源可在带括号的包声明中访问，但 `package a.b.c` 无法访问
 - 包对象
   - package 由于 JVM 的限制不能直接声明函数或变量
   - 不同于 package， package object 可定义工具函数或常量
