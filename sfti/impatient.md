@@ -264,3 +264,43 @@
   * 隐式导入，默认导入三个 `java.lang`, `scala` 和 `Predef`
     * 后面导入的可将前面的成员覆盖，避免冲突
     * 导入 scala 相关的包可省略 `scala` 路径
+
+## Inheritance
+
+> `fragile base class` 基类被继承之后，修改基类可能会对子类造成无法预期的影响
+
+* 继承类，与 Java 一样使用 `extends` 关键字
+  * `final` 类不能被继承， `final` 字段、方法不能被覆盖
+* 覆盖非抽象方法，必须使用 `override` 关键字
+* 抽象方法
+  * 无方法体的方法，可以省略 `abstract` 关键字；子类覆盖时也可以省略 `override`
+* 抽象字段
+  * 无初始值的字段，可省略 `abstract` 关键字，子类覆盖式也可省略 `override`
+* 调用父类方法，使用 `super` 关键字
+* 类型检查和转换， `isInstanceOf`, `asInstanceOf`；获取类型, `classOf`
+  * 模式匹配通常是个更好的类型检查方式
+* `protected` 不同于 Java，受保护成员在包内不可见
+* 辅助构造器不可直接调用超类构造器
+  * 可在定义类时直接在 extends 时调用超类构造器并传递参数
+  * 继承 Java 类时主构造器必须调用超类的构造器
+* 覆盖字段
+  * `def` 只能覆盖 `def`
+  * `val` 只能覆盖 无参数的 `def`
+  * `var` 只能覆盖 抽象的 `var`
+* 继承层级
+
+  ![Hierarchy](imgs/Hierarchy.png)
+  * `Any` 定义了 `asInstanceOf`, `isInstanceOf`，判断相等，hash值等方法
+  * `AnyRef` 是除基础类型外所有类的父类，等价于 `java.lang.Object`
+    * 提供方法 `wait`, `notify/notifyAll`，`synchronized`
+  * `AnyVal` 不包含任何方法，只是个值类型的标记
+  * 所有 Scala 类都实现了 `ScalaObject` 这个标记接口，该接口无任何方法
+  * `Null` 的唯一实例 `null`，可分配给引用类型，但不可分配给值类型(`Int` 不可为 `null`)
+  * `Nothing` 无实例，在泛型构造时有用，`Nil` 类型为 `List[Nothing]`
+  * `???` 方法声明返回类型为 `Nothing`， 无返回值，会抛出 `NotImplementedError`，用于预留未实现的方法
+  * `Unit` 代表空/`void`，类型唯一值为 `()`
+  * 如果方法参数类型为 `Any` 或 `AnyRef`， 当传递多个参数时，会被替换为 `tuple`
+  * `equals` 和 `hashCode` 判断对象相等
+    * 可使用模式匹配实现 `equals`
+    * `equals` 参数类型为 `Any` 而不是具体的类型
+    * `##` 是 `hashCode` 的安全版本，遇到 `null` 会返回 0 而不是抛出异常
