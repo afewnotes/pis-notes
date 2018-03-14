@@ -300,14 +300,14 @@
   * `???` 方法声明返回类型为 `Nothing`， 无返回值，会抛出 `NotImplementedError`，用于预留未实现的方法
   * `Unit` 代表空/`void`，类型唯一值为 `()`
   * 如果方法参数类型为 `Any` 或 `AnyRef`， 当传递多个参数时，会被替换为 `tuple`
-  * `equals` 和 `hashCode` 判断对象相等
-    * 可使用模式匹配实现 `equals`
-    * `equals` 参数类型为 `Any` 而不是具体的类型
-    * `##` 是 `hashCode` 的安全版本，遇到 `null` 会返回 0 而不是抛出异常
-  * 值类 Value Class
-    * 继承 `AnyVal`
-    * 主构造器只有一个参数 val，无构造体
-    * 无其他构造器和字段
-    * 自动提供的 `equals` 和 `hashCode` 比较实际值
-    * 用于隐式转换
-      * 其他用途，如 `class a(x: Int, y: Int)` 设计为 `class a(x: X, y: Y)` ，定义值类 `X`, `Y` 避免混淆参数
+* `equals` 和 `hashCode` 判断对象相等
+  * 可使用模式匹配实现 `equals`
+  * `equals` 参数类型为 `Any` 而不是具体的类型
+  * `##` 是 `hashCode` 的安全版本，遇到 `null` 会返回 0 而不是抛出异常
+* 值类 Value Class
+  * 继承 `AnyVal`
+  * 主构造器只有一个参数 val，无构造体
+  * 无其他构造器和字段
+  * 自动提供的 `equals` 和 `hashCode` 比较实际值
+  * 用于隐式转换
+    * 其他用途，如 `class a(x: Int, y: Int)` 设计为 `class a(x: X, y: Y)` ，定义值类 `X`, `Y` 避免混淆参数
