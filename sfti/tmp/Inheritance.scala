@@ -104,7 +104,7 @@ class MilTime(val time: Int) extends AnyVal {
 }
 
 object MilTime {
-  def apply(t: Int) = 
+  def apply(t: Int) =
     if (0 <= t && t <= 2400 && t % 100 < 60) new MilTime(t)
     else throw new IllegalArgumentException
 }
@@ -116,4 +116,103 @@ object TestValue extends App {
   println(a.minutes)
   // 且 a 无法调用 Int 的方法
   // a * 100 // 报错
+}
+
+/* exercise 1 */
+class BankAccount(initialBalance: Double) {
+  private var balance = initialBalance
+  def currentBalance = balance
+  def deposit(amount: Double) = {
+    balance += amount
+    balance
+  }
+  def withdraw(amount: Double) = {
+    balance -= amount
+    balance
+  }
+}
+
+class CheckingAccount(initialBalance: Double)
+    extends BankAccount(initialBalance) {
+  def charges { balance -= 1 }
+  override def deposit(amount: Double) = {
+    charges
+    super.deposit(amount)
+  }
+  override def withdraw(amount: Double) = {
+    charges
+    super.withdraw(amount)
+  }
+}
+
+/* exercise 2 */
+class SavingsAccount(initialBalance: Double)
+    extends BankAccount(initialBalance) {
+  private var free = 3
+  def charges {
+    free -= 1
+    if (free == 0) balance -= 1
+  }
+  def earnMonthlyInterest(rate: Double) = {
+    // 每月利息，3次操作免费
+    balance += balance * rate
+    free = 3
+  }
+  override def deposit(amount: Double) = {
+    charges
+    super.deposit(amount)
+  }
+  override def withdraw(amount: Double) = {
+    charges
+    super.withdraw(amount)
+  }
+}
+
+/* exercise 3 */
+class Bicycle(cadence: Int, gear: Int, speed: Int) {
+  def applyBrake(decrement: Int) = {
+    speed -= decrement
+  }
+  def speedUp(increment: Int) = {
+    speed += increment
+  }
+}
+class MountainBike(cadence: Int, gear: Int, speed: Int, seatHeight: Int)
+    extends Bicycle(cadence, gear, speed) {
+  def setHeight(height: Int) {
+    seatHeight = height
+  }
+}
+
+/* exercise 4 */
+abstract class Item {
+  def price: Double
+  def description: String
+}
+class SimpleItem(val price: Double, val description: String) extends Item
+class Bundle extends Item {
+  private var items: List[Item] = List()
+  def add(item: Item) = { items = item :: items }
+  def price: Double = items.map(_.price).sum
+  def description: String = items.map(_.description).mkString(", ")
+}
+
+/* exercise 5 */
+class Point(x: Double, y: Double)
+class LabeledPoint(label: String, x: Double, y: Double) extends Point(x, y)
+
+/* exercise 6 */
+abstract class Shape {
+  def centerPoint: Point
+}
+class Rectangle(leftTop: Point, rightBottom: Point) extends Shape {
+  def centerPoint = new Point((leftTop.x + rightBottom.x) / 2, (leftTop.y + rightBottom.y) / 2)
+}
+class Circle(val centerPoint: Point, radius: Int) extends Shape
+
+
+/* exercise 7 */
+class Square(x: Int, y: Int, width: Int) extends java.awt.Rectangle(x,y,width,width) {
+  def this() = this(0, 0, 0)
+  def this(width: Int) = this(0, 0, width)
 }
