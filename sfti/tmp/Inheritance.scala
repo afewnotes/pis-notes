@@ -59,12 +59,12 @@ object Empty extends App {
   def printAny(x: Any) { println(x) }
   def printUnit(x: Unit) { println(x) }
   printAny("Hello") // Hello
-  printUnit("Hello") 
+  printUnit("Hello")
   // warning: a pure expression does nothing in statement position; you may be omitting necessary parentheses
   // printUnit("Hello")
   // ^
   // ()
-  printUnit(())  // ()
+  printUnit(()) // ()
 }
 
 /* 多参数变为元组 */
@@ -77,21 +77,43 @@ object ptt extends App {
 /* 对象相等 */
 object equal extends App {
   // 假设 description 和 price 相等则对象相等
-/* 
+  /*
   final override def equals(other: Any) = {
     other.isInstanceOf[Item] && {
       val that = other.asInstanceOf[Item]
       description == that.description && price == that.price
     }
-  } 
-  */
+  }
+   */
 
 // 模式匹配实现
   final override def equals(other: Any) = other match {
     case that: Item => description == that.description && price == that.price
-    case _ => false
+    case _          => false
   }
 
 // hashCode
   final override def hashCode = (description, price).##
+}
+
+/* Value Classes */
+class MilTime(val time: Int) extends AnyVal {
+  def minutes = time % 100
+  def hours = time / 100
+  override def toString = time
+}
+
+object MilTime {
+  def apply(t: Int) = 
+    if (0 <= t && t <= 2400 && t % 100 < 60) new MilTime(t)
+    else throw new IllegalArgumentException
+}
+
+object TestValue extends App {
+  val a = new MilTime(1230)
+  // 不会创建新对象，而是直接使用值 1230；
+  println(a.hours)
+  println(a.minutes)
+  // 且 a 无法调用 Int 的方法
+  // a * 100 // 报错
 }
