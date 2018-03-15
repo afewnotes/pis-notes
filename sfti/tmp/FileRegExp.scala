@@ -19,10 +19,13 @@ object FileTest extends App {
   source.close
 
 
-  /* 缓存后重复使用 */
   var buffered = Source.fromFile("./scan.txt", "utf-8").buffered
-  // buffered.head 返回第一个字符
+  // for (i <- buffered) print(i)
+
+  // buffered.head 返回第一个字符，但不会消费掉
   while (buffered.hasNext) {
     print(buffered.next)
   }
+
+  buffered.close
 }
