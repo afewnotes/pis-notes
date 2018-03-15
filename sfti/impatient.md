@@ -311,3 +311,8 @@
   * 自动提供的 `equals` 和 `hashCode` 比较实际值
   * 用于隐式转换
     * 其他用途，如 `class a(x: Int, y: Int)` 设计为 `class a(x: X, y: Y)` ，定义值类 `X`, `Y` 避免混淆参数
+
+## Files & RegExp
+
+* 读取所有行 `Source.fromFile({name/java.io.File}).getLines.toArray`，关闭资源 `source.close`
+* 读取字符，直接迭代 source
