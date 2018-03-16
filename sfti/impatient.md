@@ -316,3 +316,29 @@
 
 * 读取所有行 `Source.fromFile({name/java.io.File}).getLines.toArray`，关闭资源 `source.close`
 * 读取字符，直接迭代 source
+* 读取标准输入 `scala.io.StdIn`
+* 读取 URL `Source.fromURL(url, "UTF-8")`
+* 读取字符串 `Source.fromString("Hello ww")`
+* 读取二进制文件，使用 Java 的库
+* 写文件使用 Java 的库
+* 序列化 `@SerialVerionUID(42L) class Name extends Serializable`
+  * `Serializable` 为 Scala 中的 `trait`
+  * 也可省略注解，使用默认的 UID
+  * Scala 的集合都是序列化的
+* 进程控制
+  * 工具包 `scala.sys.process`，包含隐式转换将 `String` 转为 `ProcessBuilder`
+  * 执行 shell
+    * `"ls -l".!`， `!` 会执行 `ProcessBuilder` 并阻塞直到命令退出并**返回退出码**
+    * `"ls -l".!!` 会将**输出作为字符串**返回
+    * `#|` 管道： `("ls -l" #| "grep scala").!`
+    * `#>` 重定向输出： `("ls -l" #> new File("out.txt")).!`
+    * `#>>` 追加：`("ls -l" #>> new File("out.txt")).!`
+    * `#<` 重定向输入：
+      * `("grep scala" #< new File("out.txt")).!`
+      * `("grep html" #< new URL("http://baidu.com")).!`
+    * 设置执行目录/环境变量 `Process("ls -l", new File("../"), ("LANG", "en_US")).!`，环境变量为 `(k, v)` 序列
+  * 在 Java 项目中执行 Scala 脚本 `ScriptEngine engine = new ScriptEngineManager().getScriptEngineByName("scala")`
+* 正则表达式
+      * 工具类 `scala.util.matching.Regex`
+      * 构造正则对象 `val pattern = "[0-9]+".r`
+        * 存在转义、引号等情况时使用 `"""`，`val pattern = """\s+[0-9]+\s+""".r`
