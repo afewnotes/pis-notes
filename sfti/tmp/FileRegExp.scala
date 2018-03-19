@@ -98,4 +98,32 @@ object FileTest extends App {
     ))
 
   format("Hello $1 and $0", "foo", "bar")  // Hello bar and foo
+
+  // 捕获组
+  val patternG = "([0-9]+) ([a-z]+)".r
+  for (m <- patternG.findAllMatchIn("123 hello 234 z")) {
+    println("m.matched: " + m.matched)
+    println("m.group(1): " + m.group(1)) 
+    println("m.start: " + m.start) 
+    println("m.start(1): " + m.start(1)) 
+  }
+
+  // 为捕获组定义名称
+  val patternName = "([0-9]+) ([a-z]+)".r("num", "item")
+  // 直接定义
+  // val patternName = "([0-9]+) ([a-z]+)".r、
+  // 匹配 extractor
+  // val patternName(num, item) = "123 abc"
+  // num = 123
+  // item = abc
+  for (m <- patternName.findAllMatchIn("123 abc 234 bcd ")) {
+    println(m.group("item"))
+    println(m.group("num"))
+  }
+  // 直接在 for 循环抽取捕获组名
+  for (patternName(num, item) <- patternName.findAllMatchIn("123 abc 234 bcd ")) {
+    println(num + " " + item)
+  }
+
+  
 }
