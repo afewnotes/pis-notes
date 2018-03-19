@@ -343,5 +343,5 @@
       * 构造正则对象 `val pattern = "[0-9]+".r`
         * 存在转义、引号等情况时使用 `"""`，`val pattern = """\s+[0-9]+\s+""".r`
       * 捕获组使用括号表示 `val patternName = "([0-9]+) ([a-z]+)".r`
-        * 可定义正则变量作为提取器  `val pattern(num, item) = "123 abc"` (`patternName` 与定义的正则变量名一致)
+        * 可定义正则变量作为提取器  `val pattern(num, item) = "123 abc"` (`patternName` 与定义的正则名一致)
         * 也可在 for 循环中使用正则变量直接提取捕获组

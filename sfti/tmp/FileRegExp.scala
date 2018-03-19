@@ -124,6 +124,62 @@ object FileTest extends App {
   for (patternName(num, item) <- patternName.findAllMatchIn("123 abc 234 bcd ")) {
     println(num + " " + item)
   }
+}
 
+object Exercises extends App {
+  // exercise 1
+  import scala.io.Source
+  import java.io.PrintWriter
+  val out = new PrintWriter("reverse.txt")
+  Source.fromFile("./scan.txt").getLines.toArray.reverse.foreach(out.println(_))
+  out.close
+
+  // exercise 2
+  import scala.io.Source
+  import scala.collection.mutable.ArrayBuffer
+  import java.io.PrintWriter
+
+  val n = 5
+  val space = 2
+  val src = Source.fromFile("./tabs.txt").getLines
+  val out = new PrintWriter("./tabs.txt")
+  val tab = "\t".r
+  for (s <- src) {
+    var tmp = 1
+    out.println(tab.replaceSomeIn(s,
+      m =>  {
+        if (tmp <= n) {
+          tmp += 1
+          Some(" " * space)
+        } else None
+      }
+    ))
+  }
+  out.close
+
+  // exercise 3
+  import scala.io.Source
+  Source.fromFile("./scan.txt").mkString.split("\\s+").filter(_.length > 12).foreach(println)
+
+  // exercise 4
+  import scala.io.Source
+  val d = Source.fromFile("./doubles.txt").mkString.split("\\s+").map(_.toDouble)
+  println("sum=" + d.sum + " avg=" + d.sum / d.size + " max=" + d.max + " min=" + d.min)
+
+  // exercise 5
+  import java.io.PrintWriter
   
+  val out = new PrintWriter("./numbers.txt")
+  for (i <- 0 to 20) {
+    out.println("%8.0f  %f".format(Math.pow(2, i), Math.pow(2, -i)))
+  }
+  out.close
+
+  // exercise 6
+  import scala.io.Source
+  val pattern =
+    "\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"".r
+  for (pattern(s, _, _) <- pattern.findAllMatchIn(Source.fromFile("./quote.txt").mkString)) {
+    println(s)
+  }
 }

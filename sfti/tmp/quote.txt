@@ -1,0 +1,3 @@
+"like this, maybe with \"
+or \\"
+"test another \" \\"
