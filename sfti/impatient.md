@@ -187,6 +187,7 @@
 * 区分 mutable 和 immutable
 * 默认 hash map，也可使用 tree map
 * 与 Java 中的 Map 转换方便 `scala.collection.JavaConverters`
+  * 在很多时候需要使用 Java 的接口完成任务，但是处理结果时可转换为 Scala 的数据接口来处理更方便，如文件操作等
 * Tuples 在聚合操作时很有用
   * Map 中的键值对就是最简单的元组形式 `(k, v)`
   * 类型不必一致 `val a = (1, 3.14, "hello")`

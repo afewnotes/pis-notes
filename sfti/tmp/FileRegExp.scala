@@ -59,7 +59,7 @@ object FileTest extends App {
     entries.close
   }
 
-/* 序列化&反序列化 */
+  /* 序列化&反序列化 */
   @SerialVersionUID(42L) class Ser(val name: String) extends Serializable
   val s = new Ser("abc")
   import java.io._
@@ -70,13 +70,12 @@ object FileTest extends App {
   val savedS = in.readObject().asInstanceOf[Ser]
   println(savedS.name) // abc
 
-
-/* 正则表达式 */
+  /* 正则表达式 */
   import scala.util.matching.Regex
   val pattern = """\s+[0-9]+\s+""".r
   // 迭代处理
   for (matched <- pattern.findAllIn(" 123 abc,456 def"))
-    println(matched)  // 123
+    println(matched) // 123
   // 转为数组
   var a = pattern.findAllIn(" 123 abc,456 def").toArray //  Array(" 123 ")
   // 第一个匹配项
@@ -87,25 +86,28 @@ object FileTest extends App {
   pattern.replaceAllIn(" 123 234 ", "#replaced#") // "#replaced#234 "
   pattern.replaceAllIn(" 123 , 234 ", "#replaced#") // #replaced#,#replaced#
   // 替换符合条件项
-  pattern.replaceSomeIn(" 123 , 22 ", 
-    m => if (m.matched.length > 4) Some("#OK#") else None)
+  pattern.replaceSomeIn(" 123 , 22 ",
+                        m => if (m.matched.length > 4) Some("#OK#") else None)
 
   // 替换占位符
   val varPattern = """\$[0-9]+""".r
-  def format(message: String, vars: String*) = 
-    varPattern.replaceSomeIn(message, m => vars.lift(  // lift 将
-      m.matched.tail.toInt  // m.matched 返回的匹配字符串， tail 截取第一个字符之后，即 $1 变为 1
-    ))
+  def format(message: String, vars: String*) =
+    varPattern.replaceSomeIn(
+      message,
+      m =>
+        vars.lift( // lift 将
+          m.matched.tail.toInt // m.matched 返回的匹配字符串， tail 截取第一个字符之后，即 $1 变为 1
+      ))
 
-  format("Hello $1 and $0", "foo", "bar")  // Hello bar and foo
+  format("Hello $1 and $0", "foo", "bar") // Hello bar and foo
 
   // 捕获组
   val patternG = "([0-9]+) ([a-z]+)".r
   for (m <- patternG.findAllMatchIn("123 hello 234 z")) {
     println("m.matched: " + m.matched)
-    println("m.group(1): " + m.group(1)) 
-    println("m.start: " + m.start) 
-    println("m.start(1): " + m.start(1)) 
+    println("m.group(1): " + m.group(1))
+    println("m.start: " + m.start)
+    println("m.start(1): " + m.start(1))
   }
 
   // 为捕获组定义名称
@@ -146,29 +148,34 @@ object Exercises extends App {
   val tab = "\t".r
   for (s <- src) {
     var tmp = 1
-    out.println(tab.replaceSomeIn(s,
-      m =>  {
-        if (tmp <= n) {
-          tmp += 1
-          Some(" " * space)
-        } else None
-      }
-    ))
+    out.println(tab.replaceSomeIn(s, m => {
+      if (tmp <= n) {
+        tmp += 1
+        Some(" " * space)
+      } else None
+    }))
   }
   out.close
 
   // exercise 3
   import scala.io.Source
-  Source.fromFile("./scan.txt").mkString.split("\\s+").filter(_.length > 12).foreach(println)
+  Source
+    .fromFile("./scan.txt")
+    .mkString
+    .split("\\s+")
+    .filter(_.length > 12)
+    .foreach(println)
 
   // exercise 4
   import scala.io.Source
-  val d = Source.fromFile("./doubles.txt").mkString.split("\\s+").map(_.toDouble)
-  println("sum=" + d.sum + " avg=" + d.sum / d.size + " max=" + d.max + " min=" + d.min)
+  val d =
+    Source.fromFile("./doubles.txt").mkString.split("\\s+").map(_.toDouble)
+  println(
+    "sum=" + d.sum + " avg=" + d.sum / d.size + " max=" + d.max + " min=" + d.min)
 
   // exercise 5
   import java.io.PrintWriter
-  
+
   val out = new PrintWriter("./numbers.txt")
   for (i <- 0 to 20) {
     out.println("%8.0f  %f".format(Math.pow(2, i), Math.pow(2, -i)))
@@ -179,7 +186,62 @@ object Exercises extends App {
   import scala.io.Source
   val pattern =
     "\"(([^\\\\\"]+|\\\\([btnfr\"'\\\\]|[0-3]?[0-7]{1,2}|u[0-9a-fA-F]{4}))*)\"".r
-  for (pattern(s, _, _) <- pattern.findAllMatchIn(Source.fromFile("./quote.txt").mkString)) {
+  for (pattern(s, _, _) <- pattern.findAllMatchIn(
+         Source.fromFile("./quote.txt").mkString)) {
     println(s)
   }
+
+  // exercise 7
+  import scala.io.Source
+  val pattern = "\\d+\\.\\d+".r
+  val tokens = Source.fromFile("./doubles.txt").mkString
+  pattern.replaceAllIn(tokens, "").split("\\s+").foreach(println(_))
+
+  // exercise 8
+  import scala.io.Source
+  val html = Source.fromURL("http://horstmann.com", "UTF-8").mkString
+  val srcPattern =
+    """(?is)<\s*img[^>]*src\s*=\s*['"\s]*([^'"]+)['"\s]*[^>]*>""".r
+  for (srcPattern(s) <- srcPattern findAllIn html) println(s)
+
+  // exercise 9
+  import java.nio.file._
+  import scala.collection.JavaConverters  // tricks
+
+  Files
+    .walk(Paths.get("./"))
+    .iterator
+    .asScala
+    .toStream
+    .filter(p => p.getFileName.toString.endsWith(".class"))
+    .foreach(println(_))
+
+  // exercise 10
+  import scala.collection._
+  @SerialVersionUID(42L) class Person(val name: String, friends: Person*) extends Serializable {
+    private var _friends = new mutable.HashSet[Person]()
+    
+    addFriends(friends: _*)
+
+    def addFriends(friends: Person*): Array[Person] = {
+      for (f <- friends) _friends.add(f)
+      getFriends
+    }
+
+    def getFriends = _friends.toArray
+
+    override def toString = s"Person[$name, friends=${_friends}]"
+  }
+  val p1 = new Person("Joe")
+  val p2 = new Person("Doe", p1)
+  val p3 = new Person("Foo", p1, p2)
+
+  import java.io._
+  val out = new ObjectOutputStream(new FileOutputStream("./friends.obj"))
+  out.writeObject(List(p1,p2,p3))
+  out.close
+
+  val in = new ObjectInputStream(new FileInputStream("./friends.obj"))
+  val des = in.readObject().asInstanceOf[List[Person]]
+  for (p <- des) println(p)
 }
