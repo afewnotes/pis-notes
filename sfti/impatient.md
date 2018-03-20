@@ -346,3 +346,14 @@
       * 捕获组使用括号表示 `val patternName = "([0-9]+) ([a-z]+)".r`
         * 可定义正则变量作为提取器  `val pattern(num, item) = "123 abc"` (`patternName` 与定义的正则名一致)
         * 也可在 for 循环中使用正则变量直接提取捕获组
+
+## Traits
+
+* 替代 Java 中的接口
+  * 可以有抽象的和具体的方法
+    * 在 `trait` 中未实现的方法默认是抽象的 (abstract)
+  * 类可以实现多个 `trait`
+    * 使用 `extends` 关键字实现
+    * 覆盖抽象方法时不需要 `override` 关键字
+    * 有多个 `trait` 则对其他的 `trait` 使用 `with` 关键字
+  * 所有的 Java 接口都可以被当做 `trait` 使用
