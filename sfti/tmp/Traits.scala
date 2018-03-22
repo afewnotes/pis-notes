@@ -138,10 +138,61 @@ class Sub extends Super with A with B {
 }
 
 new Sub
-/* 
+/*
 Super
 Top
 A
 B
 Sub
  */
+
+// 初始化字段
+// trait 无构造参数的限制
+// 例如想为日志自定义文件名称
+val acct = new SavingsAccount with FileLogger("myapp.log") // 发生编译错误
+///* 使用抽象字段 */
+trait FileLogger extends Logger {
+  val filename: String
+  val out = new PrintStream(filename) // 此处会发生异常
+  def log(msg: String) { out.println(msg); out.flush() }
+}
+val acct = new SavingsAccount with FileLogger {
+  val filename = "myapp.log" // 不起作用
+}
+// new 关键字创建一个匿名类的实例来继承 SavingsAccount 和 FileLogger
+// filename 初始化发生在匿名类(即子类)中，而子类构造器最后才会被调用
+// 在此之前的 FileLogger 已经出发构造，out 无法实例化
+
+// /* 使用 early definition */
+val acct = new {
+  val filename = "myapp.log"  // 在构造器之前执行
+} with SavingsAccount with FileLogger
+
+// 也可以 lazy 定义， 只在需要使用时进行初始化，但效率较低，后续每次使用都会判断是否已初始化过
+trait FileLogger extends Logger {
+  val filename: String
+  lazy val out = new PrintStream(filename)
+  def log(msg: String) { out.println(msg) }
+}
+
+/* trait 继承 class */
+trait LoggerException extends Exception with ConsoleLogger {
+  def log() { log(getMessage()) }
+}
+class UnhappyException extends LoggerException {
+  override def getMessage() = "ar"
+}
+class UnhappyException extends IOException with LoggerException // OK
+class UnhappyException extends Test with LoggerException // Error: Unrelated superclasses
+
+/* self type  */
+trait LoggerException extends ConsoleLogger {
+  this: Exception =>  // 可不继承 Exception，混入改 trait 的类需要是 Exception 类型/子类
+    def log() { log(getMessage()) } // 调用 Exception 的 getMessage()
+}
+val f = new Test with LoggerException // Error
+// 使用结构类型
+trait LoggerException extends ConsoleLogger {
+  this: { def getMessage(): String } =>  // 混入改 trait 的类需要包含 getMessage 方法
+    def log() { log(getMessage()) }
+}
