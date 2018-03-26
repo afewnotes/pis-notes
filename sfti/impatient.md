@@ -374,3 +374,31 @@
   * `trait` 不继承类，直接在 body 内定义 `this: Type =>`，则混入的类必须是该 Type 类型的/子类型的
   * 也可使用结构类型(structural type)，`this: { def log(msg: String) } =>` ，则混入的类必须包含结构类型中定义的方法
 * `trait` 最终会翻译成类和接口
+
+## Operators
+
+* ```Thread.`yield`()``` 反引号除了用于命名标识符，还可以在调用方法时避免冲突(`yield` 为 Scala 关键字，但也是 `Thread` 的方法)
+* 中缀运算符(infix operators)，实际是带两个参数的方法，定义时跟普通方法一样；`a to b` 实际是 `a.to(b)`
+* 一元运算符(unary operators)
+  * `+, -, !, ~`四个可当做前缀运算符使用，`-a` 实际是 `a.unary_`
+  * 如果可放在参数后，则是后缀运算符 `a identifier`
+* 赋值操作符(assignment operators)，`a operator= b` 等价于 `a = a operator b`
+* 优先性
+  * `* / %` > `+ -` > `:` > `< >` > `! =` > `&` > `^` > `|` > 非操作符 > 赋值操作符
+  * 中缀运算符优先于后缀运算符
+* 结合性
+  * 所有操作符都是左结合的，**除了：**
+    * 以 `:` 结尾的操作符
+      * `1 :: 2 :: Nil` 实际是 `1 :: (2 :: Nil)`
+      * 右结合的二元操作符实际是第二个操作对象的方法，如 `2 :: Nil` 是 `Nil.::(2)`
+    * 赋值操作符
+* 如果 `f(a,b,c)` 调用时 `f` 不是函数或方法，则等价于 `f.apply(a,b,c)`
+  * `f(a,b,c) = value` 则等价于 `f.update(a,b,c, value)`；如针对 `HashMap` 的取值和赋值
+  * 常用来构建对象时，省略 `new` 关键字
+* 提取器
+  * 包含 `unapply` 方法的伴生对象，伴生对象可以定义成给任意类型做为提取器(如，为 String 自定义一个提取器 Name)
+  * 在变量定义时使用
+  * 在模式匹配中使用
+    * `case class` 自动附带 `apply` 和 `unapply` 方法，在模式匹配中会自动调用
+  * 提取任意序列值，需要包含 `unapplySeq` 方法，返回 `Option[Seq[Type]]`
+    * ~~~**注意**，`unapply` 和 `unapplySeq` 的参数类型不要定义成一样的~~~
