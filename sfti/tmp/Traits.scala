@@ -343,3 +343,86 @@ class IterableInputStream(is: InputStream) extends java.io.InputStream with Iter
   }
 }
 println(new IterableInputStream(new FileInputStream("./scan.txt")).iterator.map(_.toChar).mkString)
+
+/* exercise 12 */
+trait Sup { def log(msg: String) }
+trait A extends Sup {
+  override def log(msg: String) {
+    println(s"A: $msg")
+  }
+}
+trait B extends Sup {
+  override def log(msg: String) {
+    println(s"B: $msg")
+  }
+}
+class T extends A with B {
+  def log2(msg: String) {
+    super.log("Hi T")
+  }
+}
+class T2 extends B with A {
+  def log2(msg: String) {
+    super.log("Hi T2")
+  }
+}
+
+
+/*
+
+// javap -c -p T1.class
+public class T implements A,B {
+  public void log(java.lang.String);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokestatic  #19                 // Method B$class.log:(LB;Ljava/lang/String;)V
+       5: return
+
+  public void log2(java.lang.String);
+    Code:
+       0: aload_0
+       1: ldc           #26                 // String Hi T
+       3: invokestatic  #19                 // Method B$class.log:(LB;Ljava/lang/String;)V
+       6: return
+
+  public T();
+    Code:
+       0: aload_0
+       1: invokespecial #30                 // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: invokestatic  #36                 // Method A$class.$init$:(LA;)V
+       8: aload_0
+       9: invokestatic  #39                 // Method B$class.$init$:(LB;)V
+      12: return
+}
+
+// javap -c -p T2.class
+public class T2 implements B,A {
+  public void log(java.lang.String);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokestatic  #19                 // Method A$class.log:(LA;Ljava/lang/String;)V
+       5: return
+
+  public void log2(java.lang.String);
+    Code:
+       0: aload_0
+       1: ldc           #26                 // String Hi T2
+       3: invokestatic  #19                 // Method A$class.log:(LA;Ljava/lang/String;)V
+       6: return
+
+  public T2();
+    Code:
+       0: aload_0
+       1: invokespecial #30                 // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: invokestatic  #36                 // Method B$class.$init$:(LB;)V
+       8: aload_0
+       9: invokestatic  #39                 // Method A$class.$init$:(LA;)V
+      12: return
+}
+
+
+ */
