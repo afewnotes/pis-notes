@@ -395,10 +395,21 @@
 * 如果 `f(a,b,c)` 调用时 `f` 不是函数或方法，则等价于 `f.apply(a,b,c)`
   * `f(a,b,c) = value` 则等价于 `f.update(a,b,c, value)`；如针对 `HashMap` 的取值和赋值
   * 常用来构建对象时，省略 `new` 关键字
-* 提取器
+* 提取器 extractors
   * 包含 `unapply` 方法的伴生对象，伴生对象可以定义成给任意类型做为提取器(如，为 String 自定义一个提取器 Name)
   * 在变量定义时使用
   * 在模式匹配中使用
     * `case class` 自动附带 `apply` 和 `unapply` 方法，在模式匹配中会自动调用
   * 提取任意序列值，需要包含 `unapplySeq` 方法，返回 `Option[Seq[Type]]`
     * ~~~**注意**，`unapply` 和 `unapplySeq` 的参数类型不要定义成一样的~~~
+* 动态调用 dynamic invocation
+  * 定义动态类型
+    * `import scala.language.dynamics`
+    * 继承 `scala.Dynamic`
+  * Scala 处理过程
+    * `foo.method("blah")`      ~~> `foo.applyDynamic("method")("blah")`
+    * `foo.method(x = 1, 2)`    ~~> `foo.applyDynamicNamed("method")(("x", 1), ("", 2))`
+    * `foo.field`           ~~> `foo.selectDynamic("field")`
+    * `foo.varia = 10`      ~~> `foo.updateDynamic("varia")(10)`
+    * `foo.arr(10) = 13`    ~~> `foo.selectDynamic("arr").update(10, 13)`
+    * `foo.arr(10)`         ~~> `foo.applyDynamic("arr")(10)`
