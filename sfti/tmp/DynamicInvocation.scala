@@ -155,5 +155,64 @@ object Exercises extends App {
   a(10) = 1 // 1034
   a(10) = 0 // 10
 
+  /* exercise 8 */
+  class Matrix(val m: Int, val n: Int) {
+    private val matrix = Array.ofDim[Int](m, n)
+    def fill(src: Array[Array[Int]]) = {
+      for (i <- 0 until src.length)
+        for (j <- 0 until src(0).length)
+          matrix(i)(j) = src(i)(j)
+
+      matrix
+    }
+    def apply(row: Int, col: Int) = matrix(row)(col)
+    def update(row: Int, col: Int, v: Int) {
+      matrix(row)(col) = v
+    }
+
+    def +(that: Matrix) = {
+      // 要求规格相同
+      require(m == that.m)
+      require(n == that.n)
+
+      var result = Matrix(m, n)
+      for (i <- 0 until m; j <- 0 until n) {
+        result(i, j) = matrix(i)(j) + that.matrix(i)(j)
+      }
+      result
+    }
+
+    def *(that: Matrix) = {
+      // 左边列数与右边行数一致
+      require(n == that.m)
+      var result = Matrix(m, that.n) // 最终结果(左边行数，右边列数)
+      for (i <- 0 until m; j <- 0 until that.n) {
+        result(i, j) = (for (k <- 0 until n) yield matrix(i)(k) * that.matrix(k)(j)).sum
+      }
+      result
+    }
+
+    def *(s: Int) = {
+      var result = Matrix(m, n)
+      for (i <- 0 until m; j <- 0 until n) {
+        result(i, j) = matrix(i)(j) * s
+      }
+      result
+    }
+
+    override def toString = matrix.map(_.mkString(" ")).mkString("\n")
+  }
+  object Matrix {
+    def apply(m: Int, n: Int) = new Matrix(m, n)
+  }
+
+  val right = Matrix(2,3).fill(Array(Array(1,2,3), Array(4,5,6)))
+  val left = Matrix(2,2).fill(Array(Array(1,2), Array(3,4)))
+
+  left * right 
+  // 9 12 15
+  // 19 26 33
+
   
 }
+
