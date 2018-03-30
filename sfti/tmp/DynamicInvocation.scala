@@ -187,7 +187,8 @@ object Exercises extends App {
       require(n == that.m)
       var result = Matrix(m, that.n) // 最终结果(左边行数，右边列数)
       for (i <- 0 until m; j <- 0 until that.n) {
-        result(i, j) = (for (k <- 0 until n) yield matrix(i)(k) * that.matrix(k)(j)).sum
+        result(i, j) =
+          (for (k <- 0 until n) yield matrix(i)(k) * that.matrix(k)(j)).sum
       }
       result
     }
@@ -206,13 +207,134 @@ object Exercises extends App {
     def apply(m: Int, n: Int) = new Matrix(m, n)
   }
 
-  val right = Matrix(2,3).fill(Array(Array(1,2,3), Array(4,5,6)))
-  val left = Matrix(2,2).fill(Array(Array(1,2), Array(3,4)))
+  val right = Matrix(2, 3).fill(Array(Array(1, 2, 3), Array(4, 5, 6)))
+  val left = Matrix(2, 2).fill(Array(Array(1, 2), Array(3, 4)))
 
-  left * right 
+  left * right
   // 9 12 15
   // 19 26 33
 
-  
-}
+  /* exercise 9 */
+  import java.io.File
+  import java.nio.file.{Path, FileSystems}
+  object PathComponents {
+    def unapply(path: Path): Option[(String, String)] = {
+      val ap = path.toAbsolutePath
+      Some((ap.getParent.toString, ap.getFileName.toString))
+    }
+  }
+  var PathComponents(dir, name) = FileSystems.getDefault().getPath("test.txt")
 
+  /* exercise 10 */
+  import java.io.File
+  import java.nio.file.{Path, FileSystems}
+  object PathComponents {
+    def unapplySeq(path: Path): Option[Seq[String]] = {
+      Some(path.toAbsolutePath.toString.split(File.separatorChar).toSeq)
+    }
+  }
+  var PathComponents(dir, _*) = FileSystems.getDefault().getPath("test.txt")
+
+  /* exercise 11 */
+  /* https://stackoverflow.com/questions/43343065/recursive-updatedynamic-scala-for-the-impatient-chapter-11-exercise-11 */
+  import java.util.Properties
+  import scala.language.dynamics
+  class DynamicProps(val props: Properties) extends Dynamic {
+    def updateDynamic(name: String)(value: String) = new Helper(name, props)
+    def selectDynamic(name: String) =  new Helper(name, props)
+  }
+  class Helper(val _name: String, val p: Properties) extends Dynamic {
+    def selectDynamic(name: String) = new Helper(s"${_name}.$name", p)  // chianed
+    def updateDynamic(name: String)(value: String) = p.setProperty(s"${_name}.$name", value)
+    override def toString = p.getProperty(_name)
+  }
+  val sysProps = new DynamicProps(System.getProperties)
+  sysProps.username = "Fred" 
+  val home = sysProps.java.home
+
+  /* exercise 12 */
+  /* https://github.com/suniala/sfti-exercises/blob/master/src/main/scala/fi/kapsi/kosmik/sfti/Chapter11.scala#L400 */
+  import scala.language.dynamics
+  import scala.collection.mutable
+
+  class XMLElementSeq(private val elements: List[XMLElement]) extends Dynamic with Iterable[XMLElement] {
+    override def iterator: Iterator[XMLElement] = elements.iterator
+
+    def selectDynamic(name: String): XMLElementSeq =
+      new XMLElementSeq(elements.flatMap(e => e.children.filter(c => c.label == name)))
+
+    def applyDynamicNamed(name: String)(args: (String, String)*): XMLElementSeq = {
+      val filtered = selectDynamic(name).elements.filter(e => {
+        args.forall({ case (k, v) => e.attr(k) match {
+          case Some(value) => value == v
+          case _ => false
+        }
+        })
+      })
+
+      new XMLElementSeq(filtered)
+    }
+  }
+
+  class XMLElement(val label: String, private val attributes: List[(String, String)]) extends Dynamic {
+    val children: mutable.ListBuffer[XMLElement] = mutable.ListBuffer()
+
+    def selectDynamic(name: String): XMLElementSeq =
+      new XMLElementSeq(List(this)).selectDynamic(name)
+
+    def attr(attrName: String): Option[String] = {
+      val found = attributes.find({ case (name, _) => name == attrName })
+      found match {
+        case Some((_, value)) => Some(value)
+        case _ => None
+      }
+    }
+
+    override def toString: String = s"$label, ${attributes mkString ","}"
+  }
+
+  object XMLElement {
+    def fromScalaXml(elem: scala.xml.Elem): XMLElement = {
+      def rec(scalaNode: scala.xml.Node, parent: XMLElement): Unit = {
+        val attributes = scalaNode.attributes.map(a => (a.key, a.value.toString)).toList
+        val element = new XMLElement(scalaNode.label, attributes)
+
+        parent.children.append(element)
+        scalaNode.child.foreach(c => {
+          rec(c, element)
+        })
+      }
+
+      val root = new XMLElement("root", Nil)
+      rec(elem, root)
+      root
+    }
+  }
+
+  val html = <html><body><ul></ul><ul id="42"><li>test</li></ul></body></html>
+  val root = XMLElement.fromScalaXml(html)
+  println(root.html.body.ul(id="42").li)
+
+  /* exercise 13 */
+  // https://github.com/suniala/sfti-exercises/blob/master/src/main/scala/fi/kapsi/kosmik/sfti/Chapter11.scala#L488
+  class XMLBuilder extends Dynamic {
+
+    def selectDynamic(label: String): XMLElement = applyDynamicNamed(label)()
+
+    def applyDynamicNamed(name: String)(args: (String, Any)*): XMLElement = {
+      val (attrArgs, otherArgs) = args.partition({ case (key, _) => !key.isEmpty })
+      val (children, unNamedAttrs) = otherArgs.partition({ case (_, v) => v.isInstanceOf[XMLElement] })
+      val attrs = (attrArgs ++: unNamedAttrs).map({ case (k, v) => (k, v.toString) }).toList
+
+      // new XMLElement(name, args.toList)
+      val element = new XMLElement(name, attrs)
+      element.children.appendAll(children.map({ case (_, v) => v.asInstanceOf[XMLElement] }))
+      element
+    }
+  }
+
+  val b = new XMLBuilder()
+  val e = b.ul(name = "ul", b.li(name = "inside li"), "this unName attribute")
+  e //  ul, (name,ul),(,this unName attribute)
+  e.children // ListBuffer(li, (name,inside li))
+}
