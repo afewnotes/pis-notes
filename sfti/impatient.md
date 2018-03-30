@@ -413,3 +413,5 @@
     * `foo.varia = 10`      ~~> `foo.updateDynamic("varia")(10)`
     * `foo.arr(10) = 13`    ~~> `foo.selectDynamic("arr").update(10, 13)`
     * `foo.arr(10)`         ~~> `foo.applyDynamic("arr")(10)`
+
+## Higher-Order Functions
