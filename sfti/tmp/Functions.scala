@@ -63,4 +63,88 @@ object Functions {
   val a = Array("h", "w")
   val b = Array("H", "W")
   a.corresponds(b)(_.equalsIgnoreCase(_))
+
+  // Control Abstraction
+  def runInThread(block: () => Unit) {
+    new Thread {
+      override def run() { block() }
+    }.start()
+  }
+  // 调用时，需要使用 ()=>
+  runInThread { () => println("hi"); Thread.sleep(1000); println("bye")}
+  // 也可以使用 传名调用 ，省略括号
+  def runInThread(block: => Unit) {
+    new Thread {
+      override def run() { block } // 也省略括号
+    }.start()
+  }
+  // 调用时更加简洁
+  runInThread { println("hi"); Thread.sleep(1000); println("bye") }
+
+  def until(condition: => Boolean)(block: => Unit) {
+    if (!condition) {
+      block
+      until(condition)(block)
+    }
+  }
+  var x = 10
+  until(x == 0) {
+    x -= 1
+    println(x)
+  }
+
+  def indexOf(str: String, ch: Char): Int = {
+    var i = 0
+    until (i == str.length) {
+      if (str(i) == ch) return i
+      i += 1
+    }
+    return -1
+  }
+}
+
+object Exercises {
+
+  /* exercise 1 */
+  def values(fun: Int => Int, low: Int, high: Int) = 
+    for (i <- low to high) yield (i, fun(i))
+
+  /* exercise 2 */
+  Array(1,30,9,12,0).reduceLeft((a,b) => if (a > b) a else b) // 30
+
+  /* exercise 3 */
+  def factorial(i: Int) = i match {
+    case 0 => 1
+    case _ => (1 to i).reduceLeft(_ * _)
+  }
+
+  /* exercise 4 */
+  def factorial(i: Int) = (1 to i).foldLeft(1)(_ * _)
+
+  /* exercise 5 */
+  def largest(fun: Int => Int, inputs: Seq[Int]) = 
+    inputs.map(fun).reduceLeft((a, b) => if (a > b) a else b)
+
+  largest(x => 10 * x - x * x, 1 to 10) // 25
+
+  /* exercise 6 */
+  def largestAt(fun: Int => Int, inputs: Seq[Int]) =
+    inputs.map(i => (i, fun(i))).reduceLeft((a, b) => if (a._2 > b._2) a else b)._1
+
+  largestAt(x => 10 * x - x * x, 1 to 10) // 5
+
+  /* exercise 7 */
+  def adjustToPair(fun: (Int, Int) => Int)(inputs: (Int, Int)) = 
+    fun(inputs._1, inputs._2)
+
+  val pairs = (1 to 10) zip (11 to 20)
+  pairs.map(adjustToPair(_ + _))
+
+  /* exercise 8 */
+  def checkLength(strs: Array[String], ints: Array[Int]) =
+    strs.corresponds(ints)(_.length == _)
+
+  /* exercise 10 */
+  def unless(condition: Boolean)(block: => Unit) = // 第一个参数不需要传名参数，只会使用一次；需要使用柯里化，看起来更像条件控制语句
+    if (!condition) block
 }
