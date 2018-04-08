@@ -433,3 +433,18 @@
   * 将接收两个参数的函数变为接收第一个参数的函数，该函数返回一个消费第二个参数的函数
 * 控制抽象 Control Abstractions
   * Scala 只包含少量的流程控制语句，用户可自定义控制语句
+
+## Collections
+
+![collections](imgs/collections.png)
+
+* 集合区分 generic(`scala.collection`)、mutable(`scala.collection.mutable`) 和 immutable(`scala.collection.immutable`)
+  * 如果未明确导入包或使用包路径，默认使用 immutable
+* `Traversable` 集合层级的顶部，只有 `foreach` 方法是抽象的，其他方法都可直接继承使用
+* `Iterable` ，只有 `iterator` 方法是抽象的，其他方法都可直接继承使用
+  * 与 `Traversable` 的区别在于，`iterator` [带状态](https://stackoverflow.com/questions/7425370/scala-what-is-the-difference-between-traversable-and-iterable-traits-in-scala-c)（可选择获取下一个元素的时间，在获取下一个元素之前会一直跟踪集合中的位置）
+  * `Iterable` 中的 `foreach` 通过 `iterator` 实现
+* `Seq` 有序序列，包含 `length`，有固定下标
+  * `IndexedSeq` 快速随机访问，通过 `Vector` 实现
+  * `LinearSeq` 高效的 `head`/ `tail` 操作，通过 `ListBuffer` 实现
+* `Set` 无序集合
