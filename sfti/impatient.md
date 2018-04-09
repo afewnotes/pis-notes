@@ -447,4 +447,8 @@
 * `Seq` 有序序列，包含 `length`，有固定下标
   * `IndexedSeq` 快速随机访问，通过 `Vector` 实现
   * `LinearSeq` 高效的 `head`/ `tail` 操作，通过 `ListBuffer` 实现
-* `Set` 无序集合
+* `Set` 无序集合、无重复元素
+  * `SortedSet` 有序集合，按顺序访问元素，默认实现为有序二叉树
+  * `BitSet` 非负整数集合，底层使用 `Long` 数组存储
+* `Map` 键值对集合，`scala.Predef` 提供了隐式转换，可直接使用 `key -> value` 表示 `(key, value)`
+  * `SortedMap` 按 key 排序
