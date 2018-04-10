@@ -440,6 +440,7 @@
 
 * 集合区分 generic(`scala.collection`)、mutable(`scala.collection.mutable`) 和 immutable(`scala.collection.immutable`)
   * 如果未明确导入包或使用包路径，默认使用 immutable
+* 集合 `trait` 或 `class` 的伴生对象中，都有 `apply` 方法，可直接构造集合实例，如 `Array(1,2,3)`
 * `Traversable` 集合层级的顶部，只有 `foreach` 方法是抽象的，其他方法都可直接继承使用
 * `Iterable` ，只有 `iterator` 方法是抽象的，其他方法都可直接继承使用
   * 与 `Traversable` 的区别在于，`iterator` [带状态](https://stackoverflow.com/questions/7425370/scala-what-is-the-difference-between-traversable-and-iterable-traits-in-scala-c)（可选择获取下一个元素的时间，在获取下一个元素之前会一直跟踪集合中的位置）
@@ -448,7 +449,47 @@
   * `IndexedSeq` 快速随机访问，通过 `Vector` 实现
   * `LinearSeq` 高效的 `head`/ `tail` 操作，通过 `ListBuffer` 实现
 * `Set` 无序集合、无重复元素
-  * `SortedSet` 有序集合，按顺序访问元素，默认实现为有序二叉树
-  * `BitSet` 非负整数集合，底层使用 `Long` 数组存储
+  * 默认实现为 `HashSet`，即元素其实是按照对应的哈希值排序的
+    * 在 `HashSet` 中查找元素远快于在 `Array` 或 `List` 中查找
 * `Map` 键值对集合，`scala.Predef` 提供了隐式转换，可直接使用 `key -> value` 表示 `(key, value)`
   * `SortedMap` 按 key 排序
+
+### Immutable
+
+![immutable](imgs/collections.immutable.png)
+
+* `Vector` 带下标的集合，支持快速的随机访问，相当于 不可变的 `ArrayBuffer`
+  * 通过高分叉因子的树实现，每个节点包含 32 个元素或子节点
+  * 在快速随机选择和快速随机更新之间保持平衡
+  * 弥补 `List` 在随机访问上的缺陷
+
+* `Range` 有序的整型集合，步长一致
+  * `1 to 10 by 3` 即生成 1 到 10 的序列，步长为 3
+  * `util` 不包含上边界，`to` 包含上边界
+  * 不存储实际值，只保存 `start`, `end`, `step` 三个值
+
+* `List` 有限的不可变序列
+  * 为空 `Nil`，或包含两部分 `head` 元素和 `tail` (子 `List`)
+  * `::` 根据给定 `head` 和 `tail` 构建新的 `List`
+    * 右结合性，即从右侧开始调用 `1 :: 2 :: Nil` 等价于 `1 :: (2 :: Nil)` // 结果 `List(1,2)
+  * 根据 `head`, `tail` 的特性，可很容易进行递归操作
+    ```scala
+    def multi(l: List[Int]): Int = l match {
+      case Nil    => 1
+      case h :: t => h * multi(t)
+    }
+    ```
+  * 复杂度
+    * 获取 `head`, `tail` 只需要常数时间 `O(1)`
+    * 在头部添加元素也只需要常数时间 `O(1)`；可使用 `mutable.ListBuffer` 可在头部 或 尾部进行增/删元素操作
+    * 其他操作需要线性时间 `O(N)`
+
+* `SortedSet` 有序集合，按顺序访问元素，默认实现为有序二叉树
+
+* `BitSet` 非负整数集合，底层使用 `Long` 数组存储
+
+### Mutable
+
+![mutable](imgs/collections.mutable.png)
+
+* `LinkedHashSet` 除了 Hash 的特点外，会记录元素插入的顺序
