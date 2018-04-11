@@ -438,6 +438,8 @@
 
 ![collections](imgs/collections.png)
 
+* [集合性能对比](http://docs.scala-lang.org/overviews/collections/performance-characteristics.html)
+* 多少集合通过 `scala.collection.JavaConverters` 可与 Java 集合互相转换
 * 集合区分 generic(`scala.collection`)、mutable(`scala.collection.mutable`) 和 immutable(`scala.collection.immutable`)
   * 如果未明确导入包或使用包路径，默认使用 immutable
 * 集合 `trait` 或 `class` 的伴生对象中，都有 `apply` 方法，可直接构造集合实例，如 `Array(1,2,3)`
@@ -484,12 +486,72 @@
     * 在头部添加元素也只需要常数时间 `O(1)`；可使用 `mutable.ListBuffer` 可在头部 或 尾部进行增/删元素操作
     * 其他操作需要线性时间 `O(N)`
 
-* `SortedSet` 有序集合，按顺序访问元素，默认实现为有序二叉树
+* `SortedSet` 有序集合，按顺序访问元素，默认实现为红黑树
 
-* `BitSet` 非负整数集合，底层使用 `Long` 数组存储
+* `immutable.BitSet` 非负整数集合，底层使用 `Long` 数组存储
+  * 用较小的整型表示较大的整型，如 3,2,0 二进制表示为 `1101`，即十进制的 13
+
+* `ListMap`
+  * 通过键值对的 `LinkedList` 来表示 `Map`
+  * 多数情况下比标准的 `Map` 要慢，因此使用较少
+    * 只有在获取第一个元素较频繁时才比较有优势 (即 `List` 的 `head`)
+
+* `Stream` 与 `List` 类似，但其元素都是**延迟计算**的
+  * 长度无限制
+  * 只有请求的元素会被计算
+  * 通过 `#::` 构造，`1 #:: 2 #:: 3 #:: Stream.empty` 结果为 `Stream(1, ?)` 此处只打印了 `head` 1，而 `tail` 未打印，因为还未计算 `tail`
+
+* `immutable.Stack` LIFO 序列
+  * `push` 入栈 , `pop` 出栈, `top` 查看栈顶元素
+  * 很少使用，因为其操作都可以被 `List` 包括(`push` = `::`, `pop` = `tail`, `top` = `head`)
+
+* `immutable.Queue` FIFO 序列
+  * `enqueue` 入列，可使用集合做参数，一次性入列多个元素
+  * `dequeue` 出列，结果包含两部分 `(element, rest)`
 
 ### Mutable
 
 ![mutable](imgs/collections.mutable.png)
 
+* `ArrayBuffer`
+  * 包含一个 `array` 和 `size` (继承自 `ResizableArray`)
+  * 多数操作速度与 `Array` 相同
+  * 可向尾部添加元素 (恒定分摊时间，对于更大的集合也可以高效的添加元素)
+
+* `ListBuffer`，类似于 `ArrayBuffer` 但是基于链表实现
+
+* `LinkedList`
+  * 元素包含指向下一元素的链接
+  * 空链表元素自己指向自己
+
 * `LinkedHashSet` 除了 Hash 的特点外，会记录元素插入的顺序
+
+* `mutable.Queue`
+  * `+=` 添加单个元素；`++=` 添加多个元素
+  * `dequeue` 移除并返回队首元素
+
+* `mutable.Stack` 与不可变版本相同，除了会对原数据发生修改
+
+* `mutable.BitSet` 直接修改原数据，更新操作比 `immutable.BitSet` 更高效
+
+### 操作
+
+* 接收一元函数
+  * `map` 转换元素，主要应用于不可变集合
+  * `transform` 与 `map` 相同，不过用于可变集合，直接转换
+  * `collect` 接收偏函数(`PartialFunction`)作为参数；模式匹配也是一种偏函数
+  * `groupBy` 按指定函数分组，返回 `Map`
+* 接收二元函数
+  * `reduceLeft`  从左向右规约 `f(f(f(a, b), c), d)`
+  * `reduceRight` 从右向左规约 `f(a, f(b, f(c, d)))`
+  * `foldLeft` 提供初始值+二元函数，从左向右折叠，每次计算结果在左侧
+    * 可用 `/:`（表示树形左侧）操作符表示，`(init /: collection)(function)`
+  * `foldRight` 提供初始值+二元函数，从右向左折叠，每次计算结果在右侧
+    * 可用 `:\`（表示树形右侧）操作符表示，`(collection :\ init)(function)`
+  * `scanLeft` 和 `scanRight` 结合了 folding 和 mapping，结果为所有的中间过程值
+    * `(1 to 10).scanLeft(0)(_ + _) // Vector(0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55)`
+* `zip` 拉链，即将两个集合各个元素像拉链一样交叉结合在一起
+  * `List(1,2,3) zip List("a","b","c") // List((1,a), (2,b), (3,c))`
+  * 长度不一致的集合则以较小的长度为准
+* `zipAll` 为长度较短的集合设置默认值，`this.zipAll(that, thisDefault, thatDefault)`
+* `zipWithIndex` 返回元素及对应的下标
