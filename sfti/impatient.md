@@ -499,6 +499,7 @@
 * `Stream` 与 `List` 类似，但其元素都是**延迟计算**的
   * 长度无限制
   * 只有请求的元素会被计算
+    * 可通过 `force` 来强制进行计算所有元素
   * 通过 `#::` 构造，`1 #:: 2 #:: 3 #:: Stream.empty` 结果为 `Stream(1, ?)` 此处只打印了 `head` 1，而 `tail` 未打印，因为还未计算 `tail`
 
 * `immutable.Stack` LIFO 序列
@@ -555,3 +556,15 @@
   * 长度不一致的集合则以较小的长度为准
 * `zipAll` 为长度较短的集合设置默认值，`this.zipAll(that, thisDefault, thatDefault)`
 * `zipWithIndex` 返回元素及对应的下标
+* `view` 为集合创建延迟视图
+  * 对视图的操作都不会立即计算（包括第一个元素也不会）
+  * 与 `Stream` 不同，不会缓存任何值
+  * `apply` 方法会强制计算整个视图，使用 `lazyView.take(i).last` 代替 `lazyView(i)`
+* `par` 并行化集合，后续应用的方法都会并发计算
+  * 很好的解决并发编程问题
+  * 将集合变为对于的并行化实现
+  * 对于产生的结果，与串行方式的结果一致 （如 `for...yield...`）
+  * 可使用 `seq`，`toArray` 等方法将集合还原
+  * 部分方法不能并发操作
+    * 使用 `reduce` 替代 `reduceLeft`，先对各部分集合操作，然后聚合结果，但操作必须满足结合律
+    * 使用 `aggregate` 替代 `foldLeft`，先对各部分集合操作，然后用另一个操作将结果聚合
