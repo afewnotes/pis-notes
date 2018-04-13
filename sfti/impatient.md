@@ -568,3 +568,4 @@
   * 部分方法不能并发操作
     * 使用 `reduce` 替代 `reduceLeft`，先对各部分集合操作，然后聚合结果，但操作必须满足结合律
     * 使用 `aggregate` 替代 `foldLeft`，先对各部分集合操作，然后用另一个操作将结果聚合
+      * `str.par.aggregate(Set[Char]())(_ + _, _ ++ _)` 等价于 `str.foldLeft(Set[Char]())(_ + _)`

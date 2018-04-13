@@ -134,6 +134,31 @@ object Exercises {
   splitArray(Array(1, 2, 3, 4, 5, 6, 7, 8), 2) //  Array(Array(1.0, 2.0, 3.0, 4.0), Array(5.0, 6.0, 7.0, 8.0))
 
   /* 9 */
-  
 
+  // for (i <- 1 to 5; j <- 1 to i) yield i * j 等价于
+  (1 to 5).flatMap(i => (1 to i).map(j => i * j))
+  // Vector(1, 2, 4, 3, 6, 9, 4, 8, 12, 16, 5, 10, 15, 20, 25)
+
+  (1 to 5).map(i => (1 to i).map(j => i * j)) // 比较 map 与 flatMap 结果
+  // Vector(Vector(1), Vector(2, 4), Vector(3, 6, 9), Vector(4, 8, 12, 16), Vector(5, 10, 15, 20, 25))
+
+  /* 10 */
+  java.util.TimeZone.getAvailableIDs
+    .groupBy(_.split("/")(0))
+    .map(a => (a._2.length, a._1))
+    .max // (165,America)
+
+  /* 11 */
+  def freq(str: String) = {
+    // val frequencies = new scala.collection.mutable.HashMap[Char, Int]
+    // for (c <- str.par) frequencies(c) = frequencies.getOrElse(c, 0) + 1
+    // frequencies
+    import scala.collection.immutable.HashMap
+    str.par.aggregate(HashMap[Char, Int]())(
+      (m, c) => m + (c -> (m.getOrElse(c,0) + 1)), 
+      // (a, b) => a ++ b.map{ case (k,v) => k -> (v + a.getOrElse(k, 0)) }  // 通过 b 覆盖 a 中记录实现相加
+      (a, b) => (a /: b)((m, e) => m + (e._1 -> (m.getOrElse(e._1, 0) + e._2)))   // foldLeft 遍历，实现 a + b
+    )
+  }
+  freq("abbccc") // Map(a -> 1, b -> 2, c -> 3)
 }
