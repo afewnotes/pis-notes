@@ -569,3 +569,33 @@
     * 使用 `reduce` 替代 `reduceLeft`，先对各部分集合操作，然后聚合结果，但操作必须满足结合律
     * 使用 `aggregate` 替代 `foldLeft`，先对各部分集合操作，然后用另一个操作将结果聚合
       * `str.par.aggregate(Set[Char]())(_ + _, _ ++ _)` 等价于 `str.foldLeft(Set[Char]())(_ + _)`
+
+## Pattern Matching and Case Classes
+
+* 可对任何类型进行模式匹配，匹配顺序从上至下
+* 模式匹配代替 `switch`，默认分支为 `case _`；可避免 `switch` 语句中因缺少 `break` 带来的 `fall-through` 问题
+* 模式匹配也是表达式，可将其返回值直接赋值给变量
+* 模式守卫 / guards，为匹配设置条件，任何 `Boolean` 条件都可作为模式守卫；`case ... if ... => ...`
+* `case` 关键字后接变量名或对应数据结构中使用变量名，那么匹配项就赋值给该变量，**变量名必须以小写字母开头**
+* 使用 `|` 分隔同一匹配的多个可选项，**此时不可使用变量绑定元素**
+* 类型匹配，代替 `isInstanceOf` 和 `asInstanceOf`，直接进行类型转换
+  * 必须为类型指定变量名，否则匹配的是实际的类型对象
+  * 匹配在运行时发生，而 JVM 泛型会被擦除
+    * 不可以匹配具体的 `Map` 类型（可使用 `case Map[_, _]`，不可使用 `case Map[Int, Int]`）
+    * `Array` 的类型不会被擦除
+* 解构 destructuring
+  * 匹配数组
+    ```scala
+    case Array(x, y) => s"$x $y"  // 匹配长度为2的数组，并将分别绑定到 x, y
+    case Array(0, rest @ _*) => rest.min // 可变参数
+    ```
+  * 匹配 `List`
+    ```scala
+    case x :: y :: Nil => ...  // 绑定参数
+    case head :: tail => ...  // 解构 head , tail
+    ```
+  * 匹配元组
+    ```scala
+    case (0, _) => ... // 匹配第一个元素为0
+    case (x, y) => ... // 绑定参数
+    ```
