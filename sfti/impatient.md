@@ -599,3 +599,44 @@
     case (0, _) => ... // 匹配第一个元素为0
     case (x, y) => ... // 绑定参数
     ```
+* 定义变量，**注意一定要小写开头**；其实等价于 `match` 模式匹配加上赋值操作
+  * `val (x, y) = (1, 2)`
+  * `val Array(f, s, rest @ _*) = arr`
+* 用于 `for` 循环遍历集合，匹配符合条件的元素
+
+  ```scala
+  for ((k, v) <- System.getProperties()) println(s"$k $v")
+  // 匹配 value 为 "" 的项，其他的则被忽略
+  for ((k, "") <- System.getProperties()) println(k)
+  // if guard 过滤
+  for ((k, v) <- System.getProperties() if v == "") println(k)
+  ```
+
+* Case Class
+  * 用于模式匹配的特殊类
+  * 构造参数默认为 `val`，默认提供 `apply`、`unapply`、`toString`、`equals`、`hashCode`、`copy`
+    * `copy` 用于复制对象时，可使用命名参数来修改属性
+  * `case class X` 使用时 `case X() => ...`，需要括号
+  * `case object S` 单例，使用时 `case S => ...`， 不要括号
+  * `::` 也是 case class，配合中缀表达式，就是常见的匹配方式，`case head :: tail`，实际调用 `::(head, tail)`
+  * 可用于嵌套的结构；绑定变量、可变参数匹配类似
+  * 适用于固定结构的类，如 `List` 等
+
+* `sealed` 密封的
+  * 被修饰的类，则其子类必须和该类在同一个文件中定义
+  * 在编译时即确定了所有匹配项的可能性
+* `Option` 也是使用 case class 来表示是否有值存在的
+  * 子类 `Some` 封装值，子类 `None` 表示无值
+  * 相比使用 `""` 或 `null` 更加安全
+  * `Map` 进行 `get` 操作返回的也是 `Option`，也可使用模式匹配来处理
+  * `getOrElse` 尝试获取值，未获取到则使用给定的值
+* Partial Function 偏函数
+  * 没有对所有输入进行定义的函数
+  * `apply` 从模式匹配中计算函数值，`isDefinedAt` 判断输入是否匹配定义的模式
+  * `case` 语句块是偏函数
+  * `PartialFunction[A, B]` 的实例， `A` 为输入类型，`B` 为输出类型
+    * 可使用偏函数的 `lift` 方法，将偏函数变为常规函数，返回值为 `Option[B]`
+    * 也可以通过 `Function.unlift` 将返回 `Option[B]` 的函数变为偏函数
+  * `Seq[A]` 也是偏函数 `PartialFunction[Int, A]`
+  * `Map[K, V]` 也是偏函数 `PartialFunction[K, V]`
+  * `catch` 语句也是偏函数，可在 `catch` 块中使用模式匹配处理异常
