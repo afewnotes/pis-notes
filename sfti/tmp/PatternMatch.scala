@@ -76,6 +76,11 @@ object Patterns {
   case class Article(description: String, price: Double) extends Item
   case class Bundle(description: String, discount: Double, items: Item*) extends Item
 
+  def price(it: Item): Double = it match {
+    case Article(_, p) => p
+    case Bundle(_, disc, its @ _*) => its.map(price _).sum - disc
+  }
+
   val bundle = Bundle("bundle1", 20.0,
     Article("a", 19.9),
     Bundle("bundle2", 10.0,
@@ -102,4 +107,92 @@ object Patterns {
   f('-') // -1
   f.isDefinedAt('0') // false
   f('0') // 报错
+}
+
+object Exercises {
+  /* 2 */
+  def swap(src: (Int, Int)): (Int, Int) = src match {
+    case (a, b) => (b, a)
+    case _ => None
+  }
+
+  /* 3 */
+  def swap(arr: Array[Int]): Array[Int] = arr match {
+    case Array(f, s) => {
+      arr(0) = s
+      arr(1) = f
+      arr
+    }
+    case _ => arr
+  }
+
+  /* 4 */
+  abstract class Item
+  case class Article(description: String, price: Double) extends Item
+  case class Bundle(description: String, discount: Double, items: Item*) extends Item
+  case class Multiple(num: Int, item: Item) extends Item
+
+  def price(it: Item): Double = it match {
+    case Article(_, p) => p
+    case Bundle(_, disc, its @ _*) => its.map(price _).sum - disc
+    case Multiple(num, it) => num * price(it)
+  }
+
+  /* 5 */
+  def leafSum(tree: List[Any]): Int = {
+    (0 /: tree){(result: Int, node) => node match {
+      case n: Int => result + n
+      case lst: List[_] => result + leafSum(lst)
+      case _ => result
+    }}
+  }
+  leafSum(List(1, List(2,3), List(4,5, List(1,2,3)))) // 21
+
+  /* 6 */
+  sealed abstract class BinaryTree
+  case class Leaf(value: Int) extends BinaryTree
+  case class Node(left: BinaryTree, right: BinaryTree) extends BinaryTree
+
+  def leafSum(tree: BinaryTree): Int = tree match {
+    case Leaf(value) => value
+    case Node(left, right) => leafSum(left) + leafSum(right)
+  }
+
+  /* 7 */
+  case class Node(nodes: BinaryTree*) extends BinaryTree
+
+  def leafSum(tree: BinaryTree): Int = tree match {
+    case Leaf(value) => value
+    // case node: Node => (0 /: node.nodes)((result, n) => result + leafSum(n))
+    case Node(rest @ _*) => rest.map(leafSum(_)).sum
+  }
+
+  /* 8 */
+  case class OpNode(op: Char, nodes: BinaryTree*) extends BinaryTree
+
+  def leafSum(tree: BinaryTree): Int = tree match {
+    case Leaf(value) => value
+    case OpNode('+', nodes @ _*) => nodes.map(leafSum(_)).sum
+    case OpNode('-', Leaf(value)) => 0 - value
+    case OpNode('-', nodes @ _*) => nodes.map(leafSum(_)).reduceLeft((p, c) => p - c)
+    case OpNode('*', nodes @ _*) => nodes.map(leafSum(_)).product
+  }
+
+  leafSum(OpNode('+', OpNode('*', Leaf(3), Leaf(8)), Leaf(2), OpNode('-', Leaf(5)))) // 21
+  leafSum(OpNode('+', OpNode('*', Leaf(3), Leaf(8)), Leaf(2), OpNode('-', Leaf(5), Leaf(3)))) // 28
+
+  /* 9 */
+  def sum(lst: List[Option[Int]]): Int = (for (Some(i) <- lst) yield i).sum  // 这也是模式匹配……
+  def sum(lst: List[Option[Int]]): Int = lst.map(_.getOrElse(0)).sum
+
+  sum(List(Some(1), Some(2), None)) // 3
+
+  /* 10 */
+  def f(x: Double) = if (x != 1) Some(1 / (x - 1)) else None
+  def g(x: Double) = if (x >= 0) Some(x) else None
+  def compose(f1: Double => Option[Double], f2: Double => Option[Double]): Double => Option[Double] = 
+    (d: Double) => f2(d) match {
+      case Some(v) => f1(v)
+      case None => None
+    }
 }
