@@ -640,3 +640,31 @@
   * `Seq[A]` 也是偏函数 `PartialFunction[Int, A]`
   * `Map[K, V]` 也是偏函数 `PartialFunction[K, V]`
   * `catch` 语句也是偏函数，可在 `catch` 块中使用模式匹配处理异常
+
+## 注解
+
+* Scala 中注解可影响代码编译，如 `@BeanProperty` 会自动生成 `getter/setter`
+* 可用于 类、方法、字段、变量、参数等
+  * 多个注解无顺序
+  * 主构造器的注解，需要加括号 `class Credential @Inject() (var username: String, var password: String)`
+  * 表达式的注解，使用分号加注解的方式 `(map.get(key): @unchecked) ...`
+  * 类型参数的注解，`class Test[@specialized T]`
+  * 实际类型的注解，放在类型之后，`def name: String @Localized`
+* 注解实现
+  * 注解必须继承 `Annotation`
+  * 类型注解必须继承 `TypeAnnotation`
+  * 元注解 `@param`, `@field`, `@getter`, `@setter`, `@beanGetter`, `@beanSetter`
+* 对应 Java 修饰符、标记接口
+  * `@volatile` 对应 `volatile` 关键字
+  * `@transient` 对应 `transient` 关键字
+  * `@strictfp` 对应 `strictfp` 关键字
+  * `@native` 对应 `native` 关键字
+  * `@cloneable` 对应 `Cloneable`
+  * `@remote` 对应 `java.rmi.Remote`
+  * `@SerialVersionUID` 代替序列化字段
+* 使用 `@throws(classOf[Exception])` 来处理 Java 中的受检异常
+* `@varargs` 处理可变参数
+  * `@varargs def name(args: String*)` 生成 `void name(String... args)`
+  * 没有 `@varargs` 则可变参数会被转换成 `Seq[T]`
+* 优化
+  * `@tailrec` 会尝试优化尾递归调用，将其变为循环
