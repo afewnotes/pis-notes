@@ -1,3 +1,10 @@
 *.class
 *.log
 /target
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/sbt.xml
+.idea/pis-notes.iml
+.idea/modules.xml
+.idea/misc.xml
+.idea/libraries/R_User_Library.xml

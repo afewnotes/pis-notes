@@ -668,3 +668,8 @@
   * 没有 `@varargs` 则可变参数会被转换成 `Seq[T]`
 * 优化
   * `@tailrec` 会尝试优化尾递归调用，将其变为循环
+  * `@switch` 编译器会检查 `match` 表达式是否编译为 [`ableswitch` 或 `lookupswitch`](http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-3.html#jvms-3.10)，如果被编译成一系列条件表达式，则会抛出异常
+  * `@inline`, `@noinline` 建议编译器是否将方法替换为行内调用
+  * `@elidable`, 用于标注在生产代码中可移除的方法
+    * `elidable` 对象定义了很多级别常量可直接使用，未指定参数时默认是 `SERVERE` 即 1000（包含1000）
+  * `@specialized` 处理基础类型，自动生成基础类型对应包装类的方法
