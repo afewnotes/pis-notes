@@ -62,9 +62,3 @@ object Annotations {
 //  public void allDifferent2$mDc$sp(double, double, double);
 //  public void allDifferent2$mJc$sp(long, long, long);
 }
-
-object Exercises {
-  def main(args: Array[String]): Unit = {
-    
-  }
-}
