@@ -1,6 +1,12 @@
+package tmp.file
+
+import java.util.function.Consumer
+
+import scala.io.BufferedSource
+
 object FileTest extends App {
   import scala.io.Source
-  var source = Source.fromFile("./scan.txt", "UTF-8")
+  var source: BufferedSource = Source.fromFile("./scan.txt", "UTF-8")
   println(source)
   val lineIterator = source.getLines
   // 迭代处理
@@ -18,7 +24,7 @@ object FileTest extends App {
   // 读取完毕，关闭资源
   source.close
 
-  var buffered = Source.fromFile("./scan.txt", "utf-8").buffered
+  var buffered: BufferedIterator[Char] = Source.fromFile("./scan.txt", "utf-8").buffered
   // for (i <- buffered) print(i)
 
   // buffered.head 返回第一个字符，但不会消费掉
@@ -34,7 +40,7 @@ object FileTest extends App {
 
   var map = tokens.map(_ + "#")
 
-  buffered.close
+//  buffered.close
 
 // stdin
   print("hi " + io.StdIn.readLine)
@@ -63,11 +69,11 @@ object FileTest extends App {
   @SerialVersionUID(42L) class Ser(val name: String) extends Serializable
   val s = new Ser("abc")
   import java.io._
-  val out = new ObjectOutputStream(new FileOutputStream("./s.obj"))
-  out.writeObject(s)
-  out.close()
-  val in = new ObjectInputStream(new FileInputStream("./s.obj"))
-  val savedS = in.readObject().asInstanceOf[Ser]
+  val out2 = new ObjectOutputStream(new FileOutputStream("./s.obj"))
+  out2.writeObject(s)
+  out2.close()
+  val in2 = new ObjectInputStream(new FileInputStream("./s.obj"))
+  val savedS = in2.readObject().asInstanceOf[Ser]
   println(savedS.name) // abc
 
   /* 正则表达式 */
@@ -144,18 +150,18 @@ object Exercises extends App {
   val n = 5
   val space = 2
   val src = Source.fromFile("./tabs.txt").getLines
-  val out = new PrintWriter("./tabs.txt")
+  val out3 = new PrintWriter("./tabs.txt")
   val tab = "\t".r
   for (s <- src) {
     var tmp = 1
-    out.println(tab.replaceSomeIn(s, m => {
+    out3.println(tab.replaceSomeIn(s, m => {
       if (tmp <= n) {
         tmp += 1
         Some(" " * space)
       } else None
     }))
   }
-  out.close
+  out3.close
 
   // exercise 3
   import scala.io.Source
@@ -176,11 +182,11 @@ object Exercises extends App {
   // exercise 5
   import java.io.PrintWriter
 
-  val out = new PrintWriter("./numbers.txt")
+  val out4 = new PrintWriter("./numbers.txt")
   for (i <- 0 to 20) {
-    out.println("%8.0f  %f".format(Math.pow(2, i), Math.pow(2, -i)))
+    out4.println("%8.0f  %f".format(Math.pow(2, i), Math.pow(2, -i)))
   }
-  out.close
+  out4.close
 
   // exercise 6
   import scala.io.Source
@@ -193,9 +199,9 @@ object Exercises extends App {
 
   // exercise 7
   import scala.io.Source
-  val pattern = "\\d+\\.\\d+".r
+  val pattern7 = "\\d+\\.\\d+".r
   val tokens = Source.fromFile("./doubles.txt").mkString
-  pattern.replaceAllIn(tokens, "").split("\\s+").foreach(println(_))
+  pattern7.replaceAllIn(tokens, "").split("\\s+").foreach(println(_))
 
   // exercise 8
   import scala.io.Source
@@ -206,7 +212,7 @@ object Exercises extends App {
 
   // exercise 9
   import java.nio.file._
-  import scala.collection.JavaConverters  // tricks
+  import scala.collection.JavaConverters._  // tricks
 
   Files
     .walk(Paths.get("./"))
@@ -237,9 +243,9 @@ object Exercises extends App {
   val p3 = new Person("Foo", p1, p2)
 
   import java.io._
-  val out = new ObjectOutputStream(new FileOutputStream("./friends.obj"))
-  out.writeObject(List(p1,p2,p3))
-  out.close
+  val out11 = new ObjectOutputStream(new FileOutputStream("./friends.obj"))
+  out11.writeObject(List(p1,p2,p3))
+  out11.close
 
   val in = new ObjectInputStream(new FileInputStream("./friends.obj"))
   val des = in.readObject().asInstanceOf[List[Person]]

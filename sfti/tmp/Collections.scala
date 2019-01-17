@@ -71,10 +71,10 @@ object Exercises {
   indexes("Mississippi") // Map(M -> Set(0), s -> Set(2, 3, 5, 6), p -> Set(8, 9), i -> Set(1, 4, 7, 10))
 
   /* 2 */
-  def indexes(s: String) = {
+  def indexes2(s: String) = {
     s.zipWithIndex.groupBy(_._1).map(x => (x._1, x._2.map(_._2).toList))
   }
-  indexes("Mississippi") // Map(M -> List(0), s -> List(2, 3, 5, 6), p -> List(8, 9), i -> List(1, 4, 7, 10))
+  indexes2("Mississippi") // Map(M -> List(0), s -> List(2, 3, 5, 6), p -> List(8, 9), i -> List(1, 4, 7, 10))
 
   /* 3 */
   import scala.collection.mutable.ListBuffer
@@ -85,9 +85,9 @@ object Exercises {
     l
   }
 
-  def removeEven(l: ListBuffer[String]) = l.filter(l.indexOf(_) % 2 == 1)
+  def removeEven2(l: ListBuffer[String]) = l.filter(l.indexOf(_) % 2 == 1)
 
-  removeEven(ListBuffer("a", "b", "c", "d")) // ListBuffer(b, d)
+  removeEven2(ListBuffer("a", "b", "c", "d")) // ListBuffer(b, d)
 
   /* 4 */
   def getValues(keys: Traversable[String], map: Map[String, Int]) = {
@@ -112,7 +112,7 @@ object Exercises {
   // 反转
   def reverse(lst: List[Int]) =
     (lst :\ List[Int]())((pre, result) => result :+ pre) // 相当于尾部追加，效率低   -> List(), List(1), List(2, 1), List(3, 2, 1)
-  def reverse(lst: List[Int]) =
+  def reverse2(lst: List[Int]) =
     (List[Int]() /: lst)((result, pre) => pre :: result) // 更高效，只添加 head 元素 <- List(3, 2, 1), List(3, 2), List(3), List()
 
   reverse(List(1,2,3)) // List(3, 2, 1)

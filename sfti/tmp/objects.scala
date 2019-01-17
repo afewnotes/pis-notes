@@ -1,3 +1,5 @@
+package tmp.objects
+
 class Accounts {
     val id = Accounts.newUniqueNumber()
     private var balance = 0.0
@@ -81,12 +83,14 @@ object TrafficLightColor extends Enumeration {
     // 定义类型别名，方便使用
     type TrafficLightColor = Value
 }
+object Test extends App {
 
-import TrafficLightColor._
-def doWhat(color: TrafficLightColor) = {
+  import TrafficLightColor._
+  def doWhat(color: TrafficLightColor) = {
     if (color == Red) "stop"
     else if (color == Yellow) "hurry"
     else "go"
+  }
 }
 // TrafficLightColor.values 获取字段集合
 

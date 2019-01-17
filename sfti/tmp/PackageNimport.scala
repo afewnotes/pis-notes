@@ -39,7 +39,7 @@ package people {
 /* exercise 1 */
 
 package com.horstmann {
-  object top {
+  object top1 {
     val me: String = "Hello"
   }
 }
@@ -68,7 +68,7 @@ package com.horstmann {
 package com {
   package horstmann {
     package impatient {
-      class A {
+      class A1 {
         println(top.me + "---")
       }
     }
@@ -76,7 +76,7 @@ package com {
 }
 
 package com.horstmann.impatient {
-  class B {
+  class B1 {
     //   println(top.me)  // error
   }
 }

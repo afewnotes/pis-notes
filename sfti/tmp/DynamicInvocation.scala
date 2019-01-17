@@ -1,3 +1,5 @@
+package tmp.Dynamic
+
 object Dyn {
 
   import scala.language.dynamics
@@ -34,7 +36,7 @@ object Exercises extends App {
 
   /* exercise 1 */
   3 + 4 -> 5 // (7, 5)
-  3 -> 4 + 5 // error
+//  3 -> 4 + 5 // error
 
   /* exercise 3 分数 + - * / */
   class Fraction(_n: Int, _d: Int) {
@@ -150,10 +152,10 @@ object Exercises extends App {
   object BitSequence {
     def apply(l: Long) = new BitSequence(l)
   }
-  val a = BitSequence(10)
-  a(10) // 0
-  a(10) = 1 // 1034
-  a(10) = 0 // 10
+  val a1 = BitSequence(10)
+  a1(10) // 0
+  a1(10) = 1 // 1034
+  a1(10) = 0 // 10
 
   /* exercise 8 */
   class Matrix(val m: Int, val n: Int) {
@@ -207,10 +209,12 @@ object Exercises extends App {
     def apply(m: Int, n: Int) = new Matrix(m, n)
   }
 
-  val right = Matrix(2, 3).fill(Array(Array(1, 2, 3), Array(4, 5, 6)))
-  val left = Matrix(2, 2).fill(Array(Array(1, 2), Array(3, 4)))
+  object Test extends App {
+    val right = Matrix(2, 3).fill(Array(Array(1, 2, 3), Array(4, 5, 6)))
+    val left = Matrix(2, 2).fill(Array(Array(1, 2), Array(3, 4)))
 
-  left * right
+//    println(left * right)
+  }
   // 9 12 15
   // 19 26 33
 
@@ -228,12 +232,12 @@ object Exercises extends App {
   /* exercise 10 */
   import java.io.File
   import java.nio.file.{Path, FileSystems}
-  object PathComponents {
+  object PathComponents2 {
     def unapplySeq(path: Path): Option[Seq[String]] = {
       Some(path.toAbsolutePath.toString.split(File.separatorChar).toSeq)
     }
   }
-  var PathComponents(dir, _*) = FileSystems.getDefault().getPath("test.txt")
+  var PathComponents2(dir2, _*) = FileSystems.getDefault().getPath("test.txt")
 
   /* exercise 11 */
   /* https://stackoverflow.com/questions/43343065/recursive-updatedynamic-scala-for-the-impatient-chapter-11-exercise-11 */
@@ -333,8 +337,8 @@ object Exercises extends App {
     }
   }
 
-  val b = new XMLBuilder()
-  val e = b.ul(name = "ul", b.li(name = "inside li"), "this unName attribute")
+  val b2 = new XMLBuilder()
+  val e = b2.ul(name = "ul", b2.li(name = "inside li"), "this unName attribute")
   e //  ul, (name,ul),(,this unName attribute)
   e.children // ListBuffer(li, (name,inside li))
 }

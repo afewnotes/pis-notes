@@ -1,3 +1,9 @@
+package tmp.func
+
+import java.awt.event.{ActionEvent, ActionListener}
+
+import javax.swing.JButton
+
 object Functions {
 
   import scala.math._
@@ -12,7 +18,7 @@ object Functions {
 
   // 定义参数类型 或 指定函数类型
   val fs = (_: String).charAt(_: Int)
-  val fs: (String, Int) => Char = _.charAt(_)
+  val fs2: (String, Int) => Char = _.charAt(_)
 
   // 匿名函数
   Array(1,2,3).map( (x: Int) => 3 * x)
@@ -46,13 +52,13 @@ object Functions {
     }
   })
   // SAM
-  button.addActionListener(event => counter +=1) // 函数字面量起作用
+//  button.addActionListener(event => counter +=1) // 函数字面量起作用
 
   val listener = (event: ActionListener) => println(counter)
-  button.addActionListener(listener) // 无法转换为 SAM 接口
+//  button.addActionListener(listener) // 无法转换为 SAM 接口
 
-  val listener: ActionListener = event => println(counter) // 通过变量接收函数作为 SAM 接口
-  button.addActionListener(listener) // OK
+//  val listener2: ActionListener = event => println(counter) // 通过变量接收函数作为 SAM 接口
+//  button.addActionListener(listener) // OK
 
   // Currying
   val mul = (x: Int, y: Int) => x * y
@@ -119,7 +125,7 @@ object Exercises {
   }
 
   /* exercise 4 */
-  def factorial(i: Int) = (1 to i).foldLeft(1)(_ * _)
+  def factorial4(i: Int) = (1 to i).foldLeft(1)(_ * _)
 
   /* exercise 5 */
   def largest(fun: Int => Int, inputs: Seq[Int]) = 

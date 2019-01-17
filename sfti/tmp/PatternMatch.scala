@@ -1,9 +1,11 @@
+package tmp.pattern
+
 object Patterns {
 
   var sign = 0
   val ch = '-'
 
-  ch match = {
+  ch match {
     case '+' => sign = 1
     case '-' => sign = -1
     case _ => sign = 0
@@ -61,7 +63,7 @@ object Patterns {
 /* case class */
   abstract class Amount
   case class Dollar(value: Double) extends Amount
-  case class Currency(value: Double, unit: String) extens Amount
+  case class Currency(value: Double, unit: String) extends Amount
   // 单例
   case object Nothing extends Amount
 

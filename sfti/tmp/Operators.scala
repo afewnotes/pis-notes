@@ -1,3 +1,4 @@
+package tmp.operator
 
 class Fraction(val n: Int, val d: Int) {
 
@@ -12,7 +13,7 @@ object Fraction {
 
 object Test extends App {
   // 直接构造
-  val result = Fraction(3, 4) * Fraction(2, 5)
+//  val result = Fraction(3, 4) * Fraction(2, 5)
 
   // 提取器，意思是给 n 和 d 赋值，如果调用 Fraction.apply 方法，那么结果是 Fraction(3, 4)
   val Fraction(n, d) = Fraction(3, 4) // n = 3, d = 4
@@ -31,7 +32,7 @@ object Test extends App {
   }
 
   val Number(a) = "1234" // a: Int = 1234
-  val Number(a) = "asdf" // error
+//  val Number(a) = "asdf" // error
 
 // unapply single or none
   object IsCompound {
@@ -49,12 +50,12 @@ object Test extends App {
     def unapplySeq(input: String): Option[Seq[String]] = 
       if (input.trim == "") None else Some(input.trim.split("\\s+"))
   }
-  case class Name(f: String, l: String*)
+  case class Name2(f: String, l: String*)
   
-  val author = Name("a", "b", "c")
+  val author = Name2("a", "b", "c")
   author match {
-    case Name(f, l) => println(2)
-    case Name(f, l, l1) => println(l1)
+    case Name2(f, l) => println(2)
+    case Name2(f, l, l1) => println(l1)
   }
 }
 

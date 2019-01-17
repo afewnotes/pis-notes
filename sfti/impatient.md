@@ -674,3 +674,11 @@
     * `elidable` 对象定义了很多级别常量可直接使用，未指定参数时默认是 `SERVERE` 即 1000（包含1000）
   * `@specialized` 处理基础类型，自动生成基础类型对应包装类的方法
 
+## XML
+
+* 直接在代码中使用 XML 字面量
+  ```scala
+  val doc: Elem = <html><head><title>Test</title></head><body>test</body></html>
+  val items: NodeBuffer = <li>item1</li><li>item2</li><li>item1</li><li>item2</li>
+  ```
+* `Scala` 中的 `Node` 与 `DOM` 不同，不包含父节点信息

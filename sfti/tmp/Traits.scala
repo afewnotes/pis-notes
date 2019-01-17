@@ -342,28 +342,32 @@ class IterableInputStream(is: InputStream) extends java.io.InputStream with Iter
     def next() = is.read.toByte
   }
 }
-println(new IterableInputStream(new FileInputStream("./scan.txt")).iterator.map(_.toChar).mkString)
+
+object TestTraits extends App {
+
+  println(new IterableInputStream(new FileInputStream("./scan.txt")).iterator.map(_.toChar).mkString)
+}
 
 /* exercise 12 */
-trait Sup { def log(msg: String) }
-trait A extends Sup {
+trait Sup2 { def log(msg: String) }
+trait A2 extends Sup2 {
   override def log(msg: String) {
     println(s"A: $msg")
   }
 }
-trait B extends Sup {
+trait B2 extends Sup2 {
   override def log(msg: String) {
     println(s"B: $msg")
   }
 }
-class T extends A with B {
+class TT extends A2 with B2 {
   def log2(msg: String) {
-    super.log("Hi T")
+    super.log("Hi TT")
   }
 }
-class T2 extends B with A {
+class TT2 extends B2 with A2 {
   def log2(msg: String) {
-    super.log("Hi T2")
+    super.log("Hi TT2")
   }
 }
 

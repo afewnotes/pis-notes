@@ -1,7 +1,9 @@
+package tmp.inher
+
 // 继承
 class Employee(name: String, age: Int, salary: Double)
-    extends Person(name, age) { // 直接调用超类构造器
-  val salary = 0.0
+    extends Person(name) { // 直接调用超类构造器
+//  val salary = 0.0
 
   override def toString = s"${super.toString}[name=$name]"
 }
